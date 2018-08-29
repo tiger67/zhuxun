@@ -1,0 +1,96 @@
+footer {
+  margin-top: 50px;
+}
+
+.input-box {
+  margin-bottom: 0px;
+  width: 100%;
+  position: relative
+}
+
+.sign-pg * {
+  box-sizing: border-box;
+}
+
+.input-box>input {
+  width: 100%;
+  height: 50px;
+  margin: 0;
+  padding: 4px 12px 4px 35px;
+  border: 1px solid #c8c8c8;
+  background-color: hsla(0, 0%, 71%, .1);
+  vertical-align: middle;
+  outline: none;
+  font-size: 14px;
+}
+
+.bb-none:first-child>input {
+  border-radius: 4px 4px 0 0;
+}
+
+.bb-none>input {
+  border-bottom: none;
+}
+
+.input-box:not(.bb-none)>input {
+  border-radius: 0 0 4px 4px;
+}
+
+.input-box>i {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+  font-size: 18px;
+  color: #969696;
+}
+
+.submit-box>input[type=submit] {
+  margin-top: 20px;
+  width: 100%;
+  padding: 9px 18px;
+  font-size: 18px;
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  background: #42c02e;
+  cursor: pointer;
+  outline: none;
+  display: block;
+  clear: both;
+}
+
+.sign-more-style>li {
+  margin: 0 5px;
+  display: inline-block;
+}
+
+.sign-more-style>li>a {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  display: block;
+}
+
+.sign-more-style a i {
+  font-size: 28px;
+}
+
+.sign-more-style .ic-weibo {
+  color: #e05244;
+}
+
+.sign-more-style .ic-wechat {
+  color: #00bb29
+}
+
+.sign-more-style .ic-qq_connect {
+  color: #498ad5
+}
+
+.sign-more-style .ic-douban {
+  color: #00820f;
+}
+
+.sign-more-style .ic-more {
+  color: #999;
+}
