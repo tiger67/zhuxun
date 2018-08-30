@@ -6,8 +6,8 @@
 </template>
 <style lang="scss">
 .atc-page {
-  margin: 30px auto;
-  width: 800px;
+    margin: 30px auto;
+    max-width: 800px;
 }
 
 </style>

@@ -6,39 +6,39 @@
 </template>
 <style lang="scss">
 .nav-search-wrap {
-  line-height: 20px;
-  border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, .1);
-  margin: 9px 15px;
-  padding: 6px 10px 6px 20px;
-  background-color: rgba(255, 255, 255, .1);
-  box-sizing: border-box;
-  #nav-search-input {
-    width: 107px;
-    line-height: 22px;
-    outline: none;
-    border: none;
-    font-size: 14px;
-    background-color: transparent;
-    color: #999;
-    transition: width .5s;
-    transition-delay: .1s;
+    line-height: 20px;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    margin: 9px 15px;
+    padding: 6px 10px 6px 20px;
+    background-color: rgba(255, 255, 255, .1);
     box-sizing: border-box;
-    &:focus {
-      width: 170px;
-      color: #fff;
+    #nav-search-input {
+        width: 107px;
+        line-height: 22px;
+        outline: none;
+        border: none;
+        font-size: 14px;
+        background-color: transparent;
+        color: #999;
+        transition: width .5s;
+        transition-delay: .1s;
+        box-sizing: border-box;
+        &:focus {
+            width: 150px;
+            color: #fff;
+        }
+        &::-webkit-input-placeholder {
+            color: #999;
+        }
     }
-    &::-webkit-input-placeholder {
-      color: #999;
-    }
-  }
 
-  a {
-    .iconfont {
-      font-size: 17px;
-      color: #999;
+    a {
+        .iconfont {
+            font-size: 17px;
+            color: #999;
+        }
     }
-  }
 }
 
 </style>

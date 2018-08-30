@@ -23,6 +23,22 @@ a {
   width: 1200px;
 }
 
+
+element.style {}
+
+
+@media (max-width: 1366px) {
+  .w {
+    width: 960px;
+  }
+}
+
+@media (max-width: 1092px) {
+  .w {
+    width: 750px;
+  }
+}
+
 .m0a {
   margin: 0 auto;
 }

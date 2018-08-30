@@ -22,5 +22,8 @@ let r = r1.concat(r2).concat([{
 export default new Router({
   linkActiveClass: 'active',
   linkExactActiveClass: 'exact-active',
-  routes: r
+  routes: r,
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
 })

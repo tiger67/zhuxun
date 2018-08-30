@@ -9,6 +9,7 @@
  import Article from '@/components/index/article'
  import Writer from '@/components/index/writer'
  import Tag from '@/components/index/tag'
+ import NewsInfo from '@/components/index/news-info'
  import ArticleList from '@/components/index/article-list'
  import Fonts from '@/views/Fonts'
 
@@ -19,6 +20,11 @@
          path: '',
          name: 'Home',
          component: Index
+       },
+       {
+         path: 'news',
+         name: 'NewsInfo',
+         component: NewsInfo
        },
        {
          path: 'article',

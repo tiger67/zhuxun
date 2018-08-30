@@ -10,7 +10,8 @@
 </template>
 <style>
 .page {
-  padding-top: 60px;
+    padding-top: 60px;
+    min-width: 900px;
 }
 
 </style>

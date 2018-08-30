@@ -31,44 +31,44 @@ export default {
 </script>
 <style lang="scss">
 .h-tag-page {
-  .header {
-    position: absolute;
-    left: 0;
-    top: 60px;
-    right: 0;
-    height: 180px;
-    text-align: center;
-    font-size: 32px;
-    font-weight: bold;
-    color: #fff;
-    width: 100%;
-    line-height: 180px;
-    background: url(../../../assets/home/index/tag-header.png) center center;
-  }
-  .h-tag-page-c {
-    margin-top: 190px;
-  }
-  .category {
-    border: 0px solid red;
-    .title {
-      padding: 42px 0 11px;
-      line-height: 32px;
-      font-size: 18px;
-      font-weight: bold;
-      border-bottom: 1px solid #f5f5f5;
-      vertical-align: middle;
-      margin-bottom: 15px;
-      img {
-        width: 32px;
-        height: 32px;
-        margin-right: 8px;
-        vertical-align: middle;
-      }
-      span {
-        vertical-align: middle;
-      }
+    .header {
+        position: absolute;
+        left: 0;
+        top: 60px;
+        right: 0;
+        height: 180px;
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #fff;
+        width: 100%;
+        line-height: 180px;
+        background: url(../../../assets/home/index/tag-header.png) center center;
     }
-  }
+    .h-tag-page-c {
+        margin-top: 190px;
+    }
+    .category {
+        border: 0px solid red;
+        .title {
+            padding: 42px 0 11px;
+            line-height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+            margin-bottom: 15px;
+            img {
+                width: 32px;
+                height: 32px;
+                margin-right: 8px;
+                vertical-align: middle;
+            }
+            span {
+                vertical-align: middle;
+            }
+        }
+    }
 }
 
 </style>

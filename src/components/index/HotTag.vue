@@ -11,18 +11,20 @@
 </template>
 <style lang="scss">
 .hot-tag {
-  &:before,
-  &:after {
-    display: table;
-    content: '';
-    clear: both;
-  }
-  ul {
-    border-bottom: 1px solid #f5f5f5;
-    padding-bottom: 5px;
-  }
-  font-size:14px;
-  margin-bottom:30px;
+    &:before,
+    &:after {
+        display: table;
+        content: '';
+        clear: both;
+    }
+    ul {
+        border-bottom: 1px solid #f5f5f5;
+        padding-bottom: 5px;
+    }
+    margin-bottom:30px;
+    .tag {
+        margin: 8px;
+    }
 }
 
 </style>

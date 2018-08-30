@@ -13,25 +13,30 @@
 </template>
 <style lang="scss">
 .hot-info {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 30px;
-  ul {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f5f5f5;
-  }
-  .info-line {
-    padding-left: 58px;
-    margin-bottom: 13px;
-    position: relative;
-    .time {
-      color: #999;
-      position: absolute;
-      left: 0;
-      top: 0;
-      font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    ul {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f5f5f5;
     }
-  }
+    .info-line {
+        padding-left: 58px;
+        margin-bottom: 13px;
+        position: relative;
+        .time {
+            color: #999;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 12px;
+        }
+    }
+}
+
+@media (max-width: 1092px) {
+    .hot-info {
+        font-size: 13px;
+    }
 }
 
 </style>
