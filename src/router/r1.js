@@ -6,6 +6,7 @@
  import Search from '@/components/search'
  import ArticleSearch from '@/components/search/ArticleSearch'
  import WriterSearch from '@/components/search/WriterSearch'
+ import Article from '@/components/index/article'
  import Writer from '@/components/index/writer'
  import Tag from '@/components/index/tag'
  import ArticleList from '@/components/index/article-list'
@@ -18,6 +19,11 @@
          path: '',
          name: 'Home',
          component: Index
+       },
+       {
+         path: 'article',
+         name: 'Article',
+         component: Article
        },
        {
          path: 'writer',

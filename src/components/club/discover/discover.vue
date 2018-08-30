@@ -19,7 +19,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线老刘带你看一线老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 m-follow-btn">+ 关注</div>
                     </div>   
                 </div>
@@ -34,7 +34,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 followed-btn">已关注</div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 m-follow-btn">+ 关注</div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 m-follow-btn">+ 关注</div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 o-follow-btn">+ 关注</div>
                     </div>   
                 </div>
@@ -104,7 +104,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 followed-btn">已关注</div>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 o-follow-btn">+ 关注</div>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                     <div class="intro line-clamp-3">
                         工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <div class="fbtn1 o-follow-btn">+ 关注</div>
                     </div>
                 </div>
@@ -275,7 +275,7 @@
                     line-height: 24px;
                     margin: 16px 34px 25px 34px;
                 }
-                .btn{
+                .btn-box{
                     
                 }
                 &:hover{

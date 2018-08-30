@@ -20,7 +20,7 @@
                         <span class="type" v-if="paramsID == 2">收藏</span>
                         <span class="type" v-if="paramsID == 3">浏览</span>
                     </div>
-                    <div class="btn">
+                    <div class="btn-box">
                         <span class="delete-btn">删除</span>
                     </div>
                  </div>
@@ -35,7 +35,7 @@
                          <span class="type" v-if="paramsID == 2">收藏</span>
                          <span class="type" v-if="paramsID == 3">浏览</span>
                      </div>
-                     <div class="btn">
+                     <div class="btn-box">
                          <span class="delete-btn">删除</span>
                      </div>
                  </div>
@@ -50,7 +50,7 @@
                          <span class="type" v-if="paramsID == 2">收藏</span>
                          <span class="type" v-if="paramsID == 3">浏览</span>
                      </div>
-                     <div class="btn">
+                     <div class="btn-box">
                          <span class="delete-btn">删除</span>
                      </div>
                  </div>
@@ -65,7 +65,7 @@
                          <span class="type" v-if="paramsID == 2">收藏</span>
                          <span class="type" v-if="paramsID == 3">浏览</span>
                      </div>
-                     <div class="btn">
+                     <div class="btn-box">
                          <span class="delete-btn">删除</span>
                      </div>
                  </div>
@@ -151,7 +151,7 @@
                             margin-left: 30px;
                         }
                     }
-                    .btn{
+                    .btn-box{
                         margin-top: 18px;
                         text-align: right;
                         .delete-btn{

@@ -21,14 +21,15 @@
     border-bottom: 1px solid #f5f5f5;
   }
   .info-line {
-    padding-left: 62px;
+    padding-left: 58px;
     margin-bottom: 13px;
     position: relative;
     .time {
       color: #999;
       position: absolute;
       left: 0;
-      top: 0
+      top: 0;
+      font-size: 12px;
     }
   }
 }
@@ -52,8 +53,6 @@ export default {
       ]
     }
   },
-
-
 }
 
 </script>

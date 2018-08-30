@@ -15,7 +15,8 @@
                 <div class="content">
                     <h1>筑讯中国<i></i></h1>
                     <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 followed-btn">取消关注</div>
+                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
+                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
                 </div>
             </div>
             <div class="author-item">
@@ -23,7 +24,8 @@
                 <div class="content">
                     <h1>筑讯中国<i></i></h1>
                     <p class="line-clamp-1">建筑，在这个社会中扮演什么角色？有什么意义？是文明的痕迹，还是居住的机器，是典雅高贵、粗犷豪放，还是极简主义、功能至上。实际，建筑作品体现着建筑师设计师们的意识形态和他们的世界观。在此，我们不。</p>
-                    <div class="fbtn1 followed-btn">取消关注</div>
+                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
+                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
                 </div>
             </div>
             <div class="author-item">
@@ -31,7 +33,8 @@
                 <div class="content">
                     <h1>筑讯中国<i></i></h1>
                     <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 followed-btn">取消关注</div>
+                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
+                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
                 </div>
             </div>
             <div class="author-item">
@@ -39,7 +42,8 @@
                 <div class="content">
                     <h1>筑讯中国<i></i></h1>
                     <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 followed-btn">取消关注</div>
+                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
+                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
                 </div>
             </div>
         </div>
@@ -48,7 +52,19 @@
 
 <script>
 	export default {
-
+        data() {
+            return {
+                isfollow: true
+            }
+        },
+        methods: {
+            follow() {
+                this.isfollow = true;
+            },
+            unfollow() {
+                this.isfollow = false;
+            }
+        }
 	};
 </script>
 
@@ -122,7 +138,23 @@
                         right: 0;
                         top: 0;
                         cursor: pointer;
+                        .unfollow{
+                            display: none;
+                        }
+                        .followed,.unfollow{
+                            transition: all .5s;
+                        }
                     }
+                    .followed-btn:hover{
+                        background: #ddd;
+                        color: #666;
+                        .followed{
+                            display: none;
+                        }
+                        .unfollow{
+                            display: inline-block;
+                        }
+                    }    
                 }
             }
             

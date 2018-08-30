@@ -1,21 +1,20 @@
 <template>
   <div class="header-wrap">
     <div class="main w m0a">
-      <div class="tab">
-        <div class="tab-item">
-          <router-link to="/">首页</router-link>
-        </div>
-        <div class="tab-item">
-          <router-link to="/club">club</router-link>
-        </div>
+      <router-link to="/">
+        <img src="@/assets/home/index/nav-logo.png" class="nav-logo" alt="">
+      </router-link>
+      <div class="tab-wrap clear">
+        <router-link to="/" class="tab">首页</router-link>
+        <router-link to="/club/clubIndex" class="tab">club <i class="iconfont ic-show"></i>
+        </router-link>
+        <router-link to="/article-list" class="tab">新闻资讯</router-link>
+      </div>
+      <div class="search-wrap">
+        <search-box></search-box>
       </div>
       <div class="right">
-        <div class="search-wrap">
-          <search-box></search-box>
-        </div>
-        <div class="myCenter">
-          <router-link to="/myCenter">个人中心</router-link>
-        </div>
+        <router-link to="/myCenter/myArticles" class="my-center tab">个人中心</router-link>
         <div class="head-sign">
           <router-link to="/sign_in">登录</router-link>
           <span>/</span>
@@ -49,7 +48,6 @@ $system-color-white: #fff;
 
 .header-wrap {
   width: 100%;
-  height: 60px;
   position: fixed;
   font-size: 15px;
   top: 0;
@@ -61,40 +59,66 @@ $system-color-white: #fff;
     float: right;
   }
   .main {
-    line-height: 60px;
-    .tab {
+    height: 60px;
+    * {
+      vertical-align: middle;
+    }
+    &:before {
       display: inline-block;
-      .tab-item {
-        display: inline-block;
-        margin-right: 30px;
-        a {
-          color: $system-color-white;
-        }
+      height: 100%;
+      content: '';
+      width: 0;
+      vertical-align: middle;
+    }
+    .nav-logo {
+      vertical-align: middle;
+    }
+    /*  line-height: 60px; */
+    .tab-wrap {
+      margin-left: 150px;
+      display: inline-block;
+      .tab {
+        float: left;
       }
+    }
+    .tab {
+      padding: 0 25px;
+      line-height: 60px;
+      color: #fff;
+      &:hover {
+        background-color: #444;
+      }
+      i {
+        line-height: 40px;
+      }
+    }
+    .tab.exact-active {
+      background-color: #444;
     }
     .search-wrap {
       display: inline-block;
     }
-
     .head-sign {
       float: right;
       border: 1px solid #999;
+      color: #999;
       border-radius: 20px;
       box-sizing: border-box;
-      line-height: 38px;
+      line-height: 35px;
       margin-top: 11px;
-      margin-right: 40px;
+      margin-right: 10px;
+      font-size: 14px;
       padding: 0 13px;
       a {
-        color: $system-color-white;
+        color: #999;
+        &:hover {
+          color: #aaa;
+        }
       }
     }
 
-    .myCenter {
+    .my-center {
       float: right;
-      a {
-        color: $system-color-white;
-      }
     }
   }
 }

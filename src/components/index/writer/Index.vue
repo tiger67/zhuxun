@@ -5,6 +5,9 @@
       <div class="wrt-lists clear">
         <writer-card v-for="(w,i) in lists" :writer="w" :key="i" @follow="followRun" />
       </div>
+      <div class="load-more-btn">
+        加载更多
+      </div>
     </div>
   </div>
 </template>

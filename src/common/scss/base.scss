@@ -5,7 +5,9 @@ html {
   height: 100%;
   font-family: 'Microsoft YaHe'!important;
 }
-h1,h2{
+
+h1,
+h2 {
   font-weight: normal;
 }
 
@@ -30,6 +32,24 @@ a {
   margin-right: -15px;
 }
 
+.clear {
+  &:after,
+  &:before {
+    display: table;
+    content: "";
+    clear: both;
+  }
+}
+
+.load-more-btn {
+  width: 100px;
+  height: 42px;
+  line-height: 42px;
+  border: 1px solid #aaa;
+  text-align: center;
+  cursor: pointer;
+  margin: 50px auto 84px;
+}
 
 .btn {
   display: inline-block;
@@ -101,6 +121,7 @@ a {
 }
 
 .followed-btn {
+  cursor: default;
   background: #eee;
   color: #999;
 }

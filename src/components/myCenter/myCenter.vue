@@ -95,7 +95,7 @@
 				.menu-list{
 					border-right: 1px solid #eee;
 					li{
-						width: 238px;
+						width: 239px;
 						height: 40px;
 						line-height: 40px;
 						text-align: center;

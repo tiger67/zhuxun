@@ -134,7 +134,7 @@
 	};
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 	$system-color-black: #222;
 
 	.articleList-wrapper{

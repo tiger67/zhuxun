@@ -26,6 +26,7 @@
     box-sizing: border-box;
     &:focus {
       width: 170px;
+      color: #fff;
     }
     &::-webkit-input-placeholder {
       color: #999;

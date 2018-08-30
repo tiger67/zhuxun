@@ -20,14 +20,7 @@
   * {
     box-sizing: border-box;
   }
-  .clear {
-    &:after,
-    &:before {
-      display: table;
-      content: "";
-      clear: both;
-    }
-  }
+
   .split-line {
     margin: -5px 0 15px;
     border-top: 1px solid #f0f0f0;

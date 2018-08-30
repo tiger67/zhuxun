@@ -254,6 +254,7 @@
                                 font-size: 14px;
                                 color: $system-color-black;
                                 transition: all 0.5s;
+                                outline: none;
                             }
                             .submit{
                                 display: inline-block;

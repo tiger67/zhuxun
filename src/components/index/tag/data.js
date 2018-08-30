@@ -1,0 +1,38 @@
+export default {
+  categorylists: [
+    { name: "艺术设计", url: "", img: require("@/assets/home/index/ys.png") },
+    { name: "工程技术", url: "", img: require("@/assets/home/index/gc.png") },
+    { name: "造价与管理", url: "", img: require("@/assets/home/index/zj.png") },
+    { name: "BIM", url: "", img: require("@/assets/home/index/bim.png") },
+  ],
+  taglists: [
+    { name: "室内设计", url: "" },
+    { name: "园林景观", url: "" },
+    { name: "室内设计新闻", url: "" },
+    { name: "家具配饰", url: "" },
+    { name: "室内杂谈", url: "" },
+    { name: "室内答疑", url: "" },
+    { name: "公共空间类装修", url: "" },
+    { name: "室内设计", url: "" },
+    { name: "园林景观", url: "" },
+    { name: "室内设计新闻", url: "" },
+    { name: "家具配饰", url: "" },
+    { name: "室内杂谈", url: "" },
+    { name: "室内答疑", url: "" },
+    { name: "公共空间类装修", url: "" },
+    { name: "室内设计", url: "" },
+    { name: "园林景观", url: "" },
+    { name: "室内设计新闻", url: "" },
+    { name: "家具配饰", url: "" },
+    { name: "室内杂谈", url: "" },
+    { name: "室内答疑", url: "" },
+    { name: "公共空间类装修", url: "" },
+    { name: "室内设计", url: "" },
+    { name: "园林景观", url: "" },
+    { name: "室内设计新闻", url: "" },
+    { name: "家具配饰", url: "" },
+    { name: "室内杂谈", url: "" },
+    { name: "室内答疑", url: "" },
+    { name: "公共空间类装修", url: "" }
+  ]
+}

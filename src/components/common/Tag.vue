@@ -1,6 +1,6 @@
 <template>
   <li class="tag">
-    <router-link :to="url">
+    <router-link to="/article-list">
       {{name}}
     </router-link>
   </li>
@@ -10,7 +10,7 @@
   float: left;
   padding: 8px 12px;
   background-color: #eee;
-  margin: 8px;
+  margin: 10px;
   &:hover {
     box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.1)
   }

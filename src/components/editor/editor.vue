@@ -1,6 +1,6 @@
 <template>
-    <div class="editor-wrapper">
-        <p class="save" v-show="!saving">已保存</p>
+    <div class="editor-wrapper another-version">
+        <p class="save" v-show="!saving">已保存{{ this.$route.params.id }}</p>
         <p class="save" v-show="saving">保存中...</p>
         <div class="content">
             <input type="text" class="title new" value="2018-08-29"/>

@@ -20,11 +20,11 @@
   .desc {
     padding: 10px;
     background-color: #fafafa;
-    font-size: 14px;
+    font-size: 13px;
     h6 {
       line-height: 24px;
       color: #333;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
     }
     span {

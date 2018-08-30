@@ -97,7 +97,6 @@
     }
     .cancel-btn {
       border-radius: 40px;
-
       border: 1px solid hsla(0, 0%, 59%, .6);
       color: #8c8c8c;
       background-color: hsla(0, 0%, 71%, .1);

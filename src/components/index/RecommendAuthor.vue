@@ -114,7 +114,8 @@
 }
 
 .cmd-author-line .follow {
-  color: #42c02e;
+  /* color: #42c02e; */
+  color: #ffc81f;
 }
 
 .cmd-author-line .hasfollow {

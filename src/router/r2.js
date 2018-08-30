@@ -26,7 +26,7 @@ import listContent from '@/components/visitor/listContent/listContent'
 
 let routes = [
 	{
-      path: '/editor',
+      path: '/editor/:id',
       component: editor
     },
     {

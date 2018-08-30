@@ -7,7 +7,7 @@
             <div class="tab-item" :class="{'active': selectType===2}" @click="select(2)">待审核({{review.length}})</div>
         </div>
         <div class="content-list">
-            <div class="article-item" v-show="needShow(item.type)" v-for="item in articleList">
+            <div class="article-item" v-show="needShow(item.type)" v-for="(item,index) in articleList">
                 <div class="img-wrapper" v-if="item.hasImg===1">
                     <img :src="item.img">
                     <div class="btm-type draft" v-if="item.type===3">草稿</div>
@@ -17,7 +17,7 @@
                     <h1 class="line-clamp-1" :class="{'bef-no-img':item.hasImg!=1}">
                         <span class="draft" v-if="item.hasImg!=1 && item.type===3">草稿</span>
                         <span class="review" v-if="item.hasImg!=1 && item.type===2">审核中</span>
-                        {{item.title}}
+                        <router-link to="">{{item.title}}</router-link>
                     </h1>
                     <div class="label">
                         <span v-for="labell in item.label">{{labell.name}}</span>
@@ -26,14 +26,18 @@
                         <span class="time">{{item.time}}</span>
                         <span class="type" v-if="item.type===1">发布</span><span class="type" v-if="item.type===2 || item.type===3">保存</span>
                     </div>
-                    <div class="btn">
-                        <span class="edit-btn" v-if="item.type===3">编辑</span>
-                        <span class="delete-btn" v-if="item.type===1 || item.type===2">删除</span>
+                    <div class="btn-box">
+                        <router-link :to="{path: '/editor/' + item.id}" target="_blank">
+                            <span class="edit-btn" v-if="item.type===3">编辑</span>
+                        </router-link>
+                        <span class="delete-btn"  @click="showAlert(item.id,index)">删除</span>
                     </div>
                 </div>
             </div>
         </div>
+        <alert ref="alert" @select-btn="selectBtn">确定要删除这篇文章吗？</alert>
     </div>
+    
 </template>
 
 <script>
@@ -42,11 +46,14 @@
     const drafts = 3;
     const all = 0;
 
+    import alert from '@/components/alert/alert';
+
 	export default {
         data() {
             return {
                 articleList: [
                     {
+                        'id': 1,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': './assets/pic1.png',
                         'hasImg': 1, //1是true，0是false
@@ -55,6 +62,7 @@
                         'type': 1, //1是已发布，2是待审核，3是草稿箱
                     },
                     {
+                        'id': 2,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 1,
@@ -63,6 +71,7 @@
                         'type': 2, 
                     },
                     {
+                        'id': 3,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 1,
@@ -71,6 +80,7 @@
                         'type': 3, 
                     },
                     {
+                        'id': 4,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 0,
@@ -79,6 +89,7 @@
                         'type': 1,
                     },
                     {
+                        'id': 5,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 0,
@@ -87,6 +98,7 @@
                         'type': 2,
                     },
                     {
+                        'id': 6,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 0,
@@ -95,6 +107,7 @@
                         'type': 3,
                     },
                     {
+                        'id': 7,
                         'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
                         'img': '../../../assets/pic1.png',
                         'hasImg': 1,
@@ -103,7 +116,8 @@
                         'type': 1, 
                     }
                 ],
-                selectType: 0
+                selectType: 0,
+                deleteId: 0
             }
         },
         computed: {
@@ -133,7 +147,21 @@
                 }else{
                     return type === this.selectType;
                 }
+            },
+            showAlert(id) {
+                document.body.style.overflow='hidden';
+                this.$refs.alert.show();
+                this.deleteId = id;
+            },
+            selectBtn(type,i) {
+                console.log(type+'..'+this.deleteId);
+                if(type===1) {
+                   this.articleList.splice(i,1);
+                }
             }
+        },
+        components: {
+            alert
         }
   };
 </script>
@@ -202,6 +230,11 @@
                         font-size: 16px;
                         color: $system-color-black;
                         font-weight: bold;
+                        &:hover{
+                            a{
+                                color: #4285F4;
+                            }
+                        }
                         &.bef-no-img{
                             width: 535px;
                             span{
@@ -220,10 +253,14 @@
                                     color: $system-color-bright;
                                 }
                             }
-                        }
+                            & + .label{
+                                padding-bottom: 28px;
+                                margin-top: 16px;
+                            }
+                        } 
                     }
                     .label{
-                        margin-top: 12px;
+                        margin-top: 20px;
                         span{
                             display: inline-block;
                             height: 15px;
@@ -251,7 +288,7 @@
                             margin-left: 30px;
                         }
                     }
-                    .btn{
+                    .btn-box{
                         position: absolute;
                         bottom: 0;
                         right: 0;

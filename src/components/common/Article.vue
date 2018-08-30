@@ -13,7 +13,7 @@
             <img src="@/assets/home/index/2.png" alt="">筑讯中国
           </router-link>
           <a href="javascript:void(0);">
-              <i class='iconfont ic-applying'></i> 一个小时前</a>
+            <i class='iconfont ic-applying'></i> 一个小时前</a>
           <router-link target="_blank" to="/comments">
             <i class='iconfont ic-list-read'></i> 2486
           </router-link>
@@ -128,6 +128,7 @@ $home-color:#333;
     }
   }
   .meta {
+
     .avatar {
       height: 32px;
       img {
@@ -142,7 +143,7 @@ $home-color:#333;
     a {
       margin-right: 12px;
       color: #b4b4b4;
-      font-size: 14px;
+      font-size: 13px;
     }
   }
 }
@@ -159,7 +160,6 @@ export default {
 
     }
   }
-
 }
 
 </script>
