@@ -1,6 +1,6 @@
 <template>
   <div class="sign-pg">
-    <router-link to="/" class="logo">筑讯</router-link>
+    <router-link to="/" class="logo">筑讯中国</router-link>
     <div class="sign-panel">
       <div class="sign-p-hd">
         <router-link to="/sign_in">登录</router-link>

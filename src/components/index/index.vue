@@ -1,12 +1,12 @@
 <template>
   <div class="home">
-    <div class="left-m">
+    <div class="left-m w-b">
       <swiper />
       <!-- <recommend-subject />
       <div class="split-line"></div> -->
       <article-list/>
     </div>
-    <div class="right-m">
+    <div class="right-m w-s">
       <activity />
       <app-share />
       <hot-info />
@@ -30,7 +30,6 @@
     float: left;
     /* width: 66.66667%; */
     /*  width: 860px; */
-    width: 71.666666666667%;
     /*  border: 1px solid #ccc; */
     padding-top: 30px;
     /*  padding-left: 15px; */
@@ -41,7 +40,6 @@
     /*  margin-left: 4.16667%; */
     /* width: 29.16667%; */
     /*  width: 300px; */
-    width: 25%;
     padding: 30px 0 0;
   }
 

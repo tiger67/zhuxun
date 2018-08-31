@@ -11,6 +11,7 @@
   padding: 8px 12px;
   background-color: #eee;
   margin: 10px;
+  border-radius: 4px;
   &:hover {
     box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.1)
   }

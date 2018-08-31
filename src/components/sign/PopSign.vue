@@ -1,30 +1,37 @@
 <template>
-  <pop-mask @close="$emit('close')">
+  <pop-mask v-show="c.showPopSign">
     <div class="sign-panel">
       <div class="sign-p-hd">
-        <a href="#" :class="{'router-link-exact-active':!issignup}" @click.prevent="$emit('swichsignup',false)">登录</a>
+        <a href="#" :class="{'exact-active':!issignup}" @click.prevent="toggle(false)">登录</a>
         <b>·</b>
-        <a href="#" :class="{'router-link-exact-active':issignup}" @click.prevent="$emit('swichsignup',true)">注册</a>
+        <a href="#" :class="{'exact-active':issignup}" @click.prevent="toggle(true)">注册</a>
       </div>
       <sign-in v-show="!issignup" />
       <sign-up v-show="issignup" />
     </div>
   </pop-mask>
 </template>
+<style lang="scss">
+
+
+</style>
 <script>
 import PopMask from "./PopMask"
 import SignIn from "./SignIn"
 import SignUp from "./SignUp"
+import data from "data"
 export default {
-  props: {
-    issignup: Boolean,
-  },
   data() {
     return {
-      //issignup: !this.issignup,
+      issignup: false,
+      c: data
     }
   },
-  methods: {},
+  methods: {
+    toggle: function(flag) {
+      this.issignup = flag;
+    }
+  },
   components: {
     PopMask,
     SignIn,

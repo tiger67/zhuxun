@@ -6,8 +6,8 @@
 </template>
 <style lang="scss">
 .atc-page {
-    margin: 30px auto;
-    max-width: 800px;
+  margin: 30px auto;
+  max-width: 800px;
 }
 
 </style>
@@ -15,6 +15,7 @@
 import data from "./data"
 import SideTool from "./SideTool"
 import Article from "./Article"
+
 console.log(data);
 export default {
   data() {
@@ -24,7 +25,8 @@ export default {
   },
   components: {
     SideTool,
-    AritcleSingle: Article
+    AritcleSingle: Article,
+
   }
 }
 

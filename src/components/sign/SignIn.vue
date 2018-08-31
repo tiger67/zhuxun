@@ -81,20 +81,17 @@ export default {
       nickname: "",
       password: "",
       telephone: '',
-      sign: data
+      c: data
     }
   },
   methods: {
-    togglesign: function() {
-      this.issign = !this.issign;
-    },
     submit: function() {
-      this.sign.isSignIned = true;
-      if (this.$route.name == "sign_in") {
+      this.c.isSignIned = true;
+      if (this.$route.name == "SignIn") {
         this.$router.push('/');
       } else {
-        //this.$parent.$parent.close();
-        this.$router.push('/');
+        this.c.showPopSign = false;
+        //this.$router.push('/');
         //this.$parent.$parent.$parent.toggle(false);
       }
     }

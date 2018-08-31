@@ -19,7 +19,8 @@
   margin-bottom: 30px;
   .desc {
     padding: 10px;
-    background-color: #fafafa;
+    /*  background-color: #fafafa; */
+    border: 1px solid #f0f0f0;
     font-size: 13px;
     h6 {
       line-height: 24px;
@@ -37,6 +38,7 @@
     width: 100%;
     height: auto;
     display: block;
+    border-radius: 4px;
   }
   .home-title {
     margin-bottom: 20px;

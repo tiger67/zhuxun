@@ -7,7 +7,7 @@
     </div>
     <ul class="hcu-lists">
       <li class="cmd-author-line" v-for="a in lists">
-        <router-link class="avatar" to='/404'>
+        <router-link class="avatar" to='/myCenter'>
           <img :src="a.avatar" />
         </router-link>
         <a v-if="!a.isfollowed" herf="javascript:void(0);" @click.prevent="follow(a,true)" class="follow-btn follow">
@@ -17,7 +17,7 @@
           <span class="hover-hid"><i class="iconfont ic-followed"></i>已关注</span>  
           <span><i class="iconfont ic-unfollow"></i>取消关注</span>  
         </a>
-        <router-link to="/follow" class="author-name">{{a.name}}</router-link>
+        <router-link to="/myCenter" class="author-name">{{a.name}}</router-link>
         <p>
           写了{{a.words>1000 ? (a.words/1000).toFixed(1)+'k':a.words}}字 · {{a.likes>1000 ? (a.likes/1000).toFixed(1)+'k':a.likes}}喜欢
         </p>

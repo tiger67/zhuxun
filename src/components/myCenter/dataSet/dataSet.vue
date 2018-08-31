@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="data-li social-media">
-            <div class="left-bar">
+            <div class="left-bar" style="height: 210px; padding-top: 30px;">
                 <span>社交账号</span>
             </div>
             <div class="right-bar">

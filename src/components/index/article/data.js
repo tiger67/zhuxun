@@ -21,7 +21,6 @@ export default {
     zang: 6,
     returns: 3,
     returnlist: [],
-
   }]
 
 

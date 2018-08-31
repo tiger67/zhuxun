@@ -6,18 +6,22 @@
         <router-view></router-view>
       </transition>
     </div>
+    <transition name="fade" mode="out-in">
+      <pop-sign />
+    </transition>
   </div>
 </template>
 <style>
 .page {
-    padding-top: 60px;
-    min-width: 900px;
+  padding-top: 60px;
+  min-width: 900px;
 }
 
 </style>
 <script>
 import '@/styles/fonts.css';
 import header from "./header/header"
+import PopSign from "./sign/PopSign"
 export default {
   data() {
     return {
@@ -25,7 +29,8 @@ export default {
     }
   },
   components: {
-    localNav: header
+    localNav: header,
+    PopSign
   },
   methods: {
     togglesign: function() {

@@ -1,7 +1,7 @@
 <template>
   <div class="writer-card">
     <div class="writer-card-wrap">
-      <router-link to="/">
+      <router-link to="/myCenter">
         <div class="avatar-wrap"><img :src="writer.img" alt="" class="avatar"></div>
         <h4 class="name">
         {{writer.name}} 
@@ -33,7 +33,8 @@
     padding: 0 20px;
     border: 1px solid #eee;
     border-radius: 4px;
-    /* background-color: hsla(0, 0%, 71%, .1); */
+    background-color: hsla(0, 0%, 71%, .1);
+
     transition: .2s ease;
     &:hover {
       box-shadow: 0 5px 20px rgba(0, 0, 0, .1);
@@ -94,6 +95,7 @@
       /* background-color: #42c02e; */
       border: 1px solid #ffc81f;
       background-color: #ffc81f;
+      /*  background-color:#3385ff; */
     }
     .cancel-btn {
       border-radius: 40px;

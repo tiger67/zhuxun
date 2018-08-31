@@ -83,7 +83,7 @@ export default {
 <style lang="scss">
 .swiper {
   border: 0px solid green;
-  /* border-radius: 6px; */
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
   margin-bottom: 35px;
