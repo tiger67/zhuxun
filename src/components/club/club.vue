@@ -51,6 +51,9 @@
 <style lang="scss">
     $system-color-black: #222222;
     $system-bgcolor: #fafafa;
+    .el-message{
+      top: 140px;
+    }
 
 	.club-wrapper{
         
@@ -69,6 +72,7 @@
                     float: left;
                     .tab-item{
                         display: inline-block;
+                        margin-right: 85px;
                         a{
                             display: inline-block;
                             padding: 33px 17px 28px 17px;

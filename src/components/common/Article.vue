@@ -1,7 +1,9 @@
 <template>
-  <div class="atc-unit" :class="{hasimg:showimg  }">
+  <div class="atc-unit" :class="{hasimg:showimg }">
+    <!-- && article.img -->
     <router-link class="img-wrap" to="/">
-      <img src="@/assets/home/index/c.png" />
+      <!-- <img src="@/assets/home/index/c.png"  /> -->
+      <img :src="article.img" />
       <router-link to="/article-list" class="atc-img-tag">室内设计</router-link>
     </router-link>
     <div class="atc-unit-c">
@@ -10,7 +12,7 @@
         <p class="abstract">{{article.abstract}}</p>
         <div class="meta">
           <router-link target="_blank" to="/myCenter" class="avatar">
-            <img src="@/assets/home/index/2.png" alt="">筑讯中国
+            <img :src="article.meta.img" alt="">{{article.meta.nickname}}
           </router-link>
           <a href="javascript:void(0)">
             <i class='iconfont ic-applying'></i> 一个小时前</a>
@@ -27,7 +29,6 @@
 </template>
 <style lang="scss" scoped>
 $home-color:#333;
-
 .atc-unit.hasimg {
   height: 140px;
   .atc-unit-c {
@@ -58,15 +59,15 @@ $home-color:#333;
       height: 25px;
       /* background: rgba(255, 200, 31, 1); */
       /* background-color: rgba(0, 0, 0, .35); */
-      background-color: rgba(255, 200, 31, .4);
+      background-color: rgba(255, 200, 31, .7);
       color: rgba(255, 255, 255, 1);
-      border-radius: 14px;
+      /* border-radius: 14px; */
       text-align: center;
       line-height: 25px;
       font-size: 12px;
       position: absolute;
-      left: 8px;
-      top: 8px;
+      left: 0px;
+      top: 0px;
     }
   }
 }

@@ -6,34 +6,18 @@
             </div>
             <div class="news">
                 <ul>
-                    <li>
+                    <li v-for="item in newslist.slice(0, 3)" :key="item.articleId">
                         <h1 class="line-clamp-2">
-                            <router-link to="">冰岛：蓝色泄湖度假酒店</router-link>
+                            <a :href="item.link" target="_blank">{{item.title}}</a>
                         </h1>
-                        <p>30分钟前</p>
-                    </li>
-                    <li>
-                        <h1 class="line-clamp-2">
-                            <router-link to="">北辰小汤山农业高科技示范园住宅小区售楼处室内装饰</router-link>
-                        </h1>
-                        <p>1小时前</p>
-                    </li>
-                    <li>
-                        <h1 class="line-clamp-2">
-                            <router-link to="">实拍6栋农村自建房，第三款最漂亮,第六款建的人最多！</router-link>
-                        </h1>
-                        <p>昨天</p>
+                        <p>{{item.publishTime | formatDate}}</p>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="content clearfix">
             <div class="club-left">
-                <div class="column-wrapper">
-                    <columnItem></columnItem>
-                    <columnItem></columnItem>
-                    <columnItem></columnItem>
-                </div>
+                <columnItem></columnItem>
             </div>
             <div class="club-right">
                 <recommend></recommend>
@@ -47,6 +31,9 @@
     import banner from '@/components/banner/banner';
     import columnItem from './columnItem';
     import recommend from './recommend';
+    import {newsFlash} from '@/api/request';
+    import {goodTime} from '@/common/js/date';
+
 
     const ERR_OK = 0;
 
@@ -58,28 +45,23 @@
             }
         },
         created() {
-            // this.$http.get('api/newslist').then((response) => {
-            //     response = response.data;
-            //     if(response.errno === ERR_OK){
-            //         console.log(response);
-            //         this.newslist = response.data;
-            //     }
-            // }).catch((error) => {
-
-            // });
-            // this.$http.get('api/clubClass').then((response) => {
-            //     response = response.data;
-            //     if (response.errno === ERR_OK) {
-            //         this.clubClass = response.data;
-            //     }
-            // }).catch((error) => {
-
-            // });
+            this.getData();
+        },
+        methods: {
+            async getData() {
+                const res = await newsFlash();
+                this.newslist = res.data;
+            }
         },
         components: {
             banner,
             columnItem,
             recommend
+        },
+        filters: {
+            formatDate(time) {
+                return goodTime(time);
+            }
         }
 	};
 </script>
@@ -95,28 +77,6 @@
         .banner-wrapper{
             height: 280px;
             margin-bottom: 39px;
-            .banner{
-                float: left;
-                width: 820px;
-                height: 100%;
-                background: #f2f2f2;
-                .swiper-pagination{
-                    text-align: right;
-                }
-                .swiper-pagination-bullets{
-                    width: auto;
-                    right: 16px;
-                    .swiper-pagination-bullet{
-                        width: 20px;
-                        height: 3px;
-                        border-radius: 0;
-                        background: rgba(255,255,255,.3);
-                    }
-                    .swiper-pagination-bullet-active{
-                        background: $system-color-white;
-                    }
-                }
-            }
             .news{
                 position: relative;
                 float: left;
@@ -188,9 +148,6 @@
                 float: left;
                 width: 820px;
                 margin-right: 40px;
-                .column-wrapper{
-                    
-                }
             }
             .club-right{
                 float: left;

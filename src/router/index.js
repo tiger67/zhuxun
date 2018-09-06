@@ -5,6 +5,7 @@ import r1 from "./r1"
 import r2 from "./r2"
 
 
+
 Vue.use(Router);
 
 let r = r1.concat(r2).concat([{

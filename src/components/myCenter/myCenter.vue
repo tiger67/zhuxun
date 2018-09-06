@@ -40,6 +40,7 @@
 </template>
 <script>
 import header from '@/components/header/header';
+
 export default {
   components: {
     'v-header': header

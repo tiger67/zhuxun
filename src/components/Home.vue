@@ -11,7 +11,7 @@
     </transition>
   </div>
 </template>
-<style>
+<style lang="scss">
 .page {
   padding-top: 60px;
   min-width: 900px;
@@ -30,7 +30,8 @@ export default {
   },
   components: {
     localNav: header,
-    PopSign
+    PopSign,
+
   },
   methods: {
     togglesign: function() {

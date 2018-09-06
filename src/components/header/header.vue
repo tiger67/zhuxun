@@ -15,36 +15,22 @@
           <search-box></search-box>
         </div>
         <div class="right">
+          <sign />
           <router-link to="/myCenter" class="my-center tab not-exact">个人中心</router-link>
-          <div class="head-sign" v-if="!c.isSignIned">
-            <router-link to="/sign_in">登录</router-link>
-            <span>/</span>
-            <router-link to="/sign_up">注册</router-link>
-          </div>
-          <span v-else>
-           <span style="float:right;display:inline-block;margin-top:23px;font-size:13px;cursor:pointer;"
-           @click="c.isSignIned=false"
-           >退出</span>
-          <img src="@/assets/home/index/4.png" alt="" class="sign-avatar" />
-          </span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import data from "data"
 import PopSign from "../sign/PopSign"
 import SearchBox from "./Search"
+import Sign from "./Sign"
 export default {
-  data() {
-    return {
-      c: data
-    }
-  },
   components: {
     PopSign,
-    SearchBox
+    SearchBox,
+    Sign
   }
 };
 
@@ -103,43 +89,23 @@ $system-color-white: #fff;
     }
     .tab.exact-active {
       &:not(.not-exact) {
-        background-color: #444;
+        /* background-color: #444; */
+        color: #ffc81f;
       }
     }
     .tab.not-exact.active {
-      background-color: #444;
+      /* background-color: #444; */
+      color: #ffc81f;
     }
     .search-wrap {
       display: inline-block;
     }
-    .head-sign {
-      float: right;
-      border: 1px solid #999;
-      color: #999;
-      border-radius: 20px;
-      box-sizing: border-box;
-      line-height: 35px;
-      margin-top: 11px;
-      margin-right: 10px;
-      font-size: 14px;
-      padding: 0 13px;
-      a {
-        color: #999;
-        &:hover {
-          color: #aaa;
-        }
-      }
-    }
-    .sign-avatar {
-      width: 40px;
-      height: 40px;
-      float: right;
-      margin-top: 11px;
-      margin-right: 10px;
-    }
+
 
     .my-center {
       float: right;
+      color: #999;
+      font-size: 13px;
     }
   }
   @media (max-width: 1366px) {

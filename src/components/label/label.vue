@@ -1,11 +1,15 @@
 <template>
     <div class="label-wrapper">
-        <span>建筑设计</span><span>室内设计</span><span>园林景观</span><span>渲染表现</span>
+        <span v-for="item in tagRspVos">{{item.tagName}}</span>
     </div>
 </template>
 
 <script>
-
+    export default {
+        props: {
+            tagRspVos: Array
+        }
+    };
 </script>
 
 <style lang="scss">

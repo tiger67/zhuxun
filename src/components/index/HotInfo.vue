@@ -6,7 +6,7 @@
     </h5>
     <ul>
       <li class="info-line" v-for="f in lists.slice(0,8) ">
-        <router-link :to="f.url"><span class="time">{{f.time}}</span> {{f.info}}</router-link>
+        <router-link to="/info-article"><span class="time">{{f.time}}</span> {{f.info}}</router-link>
       </li>
     </ul>
   </div>

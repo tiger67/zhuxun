@@ -32,7 +32,7 @@
     color: #fff;
     width: 100%;
     line-height: 180px;
-    background: url(../../../assets/home/index/writer-header.png) center center;
+    background: url(~@/assets/home/index/writer-header.png) center center;
   }
   .h-w-p-con {
     width: 76.666666666667%;

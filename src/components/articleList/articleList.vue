@@ -1,124 +1,27 @@
 <template>
 	<div class="articleList-wrapper">
 		<ul class="article-lists">
-			<li class="atc-unit">
+			<li class="atc-unit" v-for="item in ArticleList" :key="item.id">
 		        <div class="img-wrapper">
-		          	<img src="@/assets/home/index/c.png" />
-		          	<span class="atc-img-tag interior-design">室内设计</span>
+		          	<img :src="item.thumbnail " />
+		          	<span class="atc-img-tag" :class="{'interior-design': item.tagId===3}">{{item.tagName}}</span>
 		        </div>
 		        <div class="atc-unit-c">
 	            	<h1 class="title">
-	            		<router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议</router-link>
+	            		<router-link to="">{{item.title}}</router-link>
 	            	</h1>
-	            	<p class="abstract">近日，为深入贯彻落实市政府违法建设、违法销售和扬尘治理工作会议精神，戎华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议。违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会</p>
+	            	<p class="abstract">{{item.introduce}}</p>
 		            <div class="meta">
 		            	<span class="com-name">
 		              		<router-link target="_blank" to="/visitor" class="avatar">
-		                		<img src="@/assets/home/index/2.png" alt="">
-		              		</router-link>筑讯中国<i class="v1"></i>&nbsp;·&nbsp;1小时前
+		                		<img :src="item.photoUrl" alt="">
+		              		</router-link>{{item.userName}}<i :class="{ 'v1': item.user_type===0, 'v2': item.user_type===1 }"></i>&nbsp;·&nbsp;{{item.publishTime | formatDate}}
 		              	</span>
 			            <span class="read">
-			                <i class='iconfont ic-list-read'></i> 2486
+			                <i class='iconfont ic-list-read'></i> {{item.borwseCnt}}
 			            </span>
 			            <span class="like">
-			                <i class='iconfont ic-list-like'></i> 456
-			            </span>
-		            </div>
-		        </div>
-	      	</li>
-	      	<li class="atc-unit">
-		        <div class="img-wrapper">
-		          	<img src="@/assets/home/index/c.png" />
-		          	<span class="atc-img-tag">园林景观</span>
-		        </div>
-		        <div class="atc-unit-c">
-	            	<h1 class="title">
-	            		<router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议</router-link>
-	            	</h1>
-	            	<p class="abstract">近日，为深入贯彻落实市政府违法建设、违法销售和扬尘治理工作会议精神，戎华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议。违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会</p>
-		            <div class="meta">
-		            	<span class="com-name">
-		              		<router-link target="_blank" to="/visitor" class="avatar">
-		                		<img src="@/assets/home/index/2.png" alt="">
-		              		</router-link>筑讯中国&nbsp;·&nbsp;1小时前
-		              	</span>
-			            <span class="read">
-			                <i class='iconfont ic-list-read'></i> 2486
-			            </span>
-			            <span class="like">
-			                <i class='iconfont ic-list-like'></i> 456
-			            </span>
-		            </div>
-		        </div>
-	      	</li>
-	      	<li class="atc-unit">
-		        <div class="img-wrapper">
-		          	<img src="@/assets/home/index/c.png" />
-		          	<span class="atc-img-tag">园林景观</span>
-		        </div>
-		        <div class="atc-unit-c">
-	            	<h1 class="title">
-	            		<router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议</router-link>
-	            	</h1>
-	            	<p class="abstract">近日，为深入贯彻落实市政府违法建设、违法销售和扬尘治理工作会议精神，戎华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议。违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会</p>
-		            <div class="meta">
-		            	<span class="com-name">
-		              		<router-link target="_blank" to="/visitor" class="avatar">
-		                		<img src="@/assets/home/index/2.png" alt="">
-		              		</router-link>筑讯中国&nbsp;·&nbsp;1小时前
-		              	</span>
-			            <span class="read">
-			                <i class='iconfont ic-list-read'></i> 2486
-			            </span>
-			            <span class="like">
-			                <i class='iconfont ic-list-like'></i> 456
-			            </span>
-		            </div>
-		        </div>
-	      	</li>
-	      	<li class="atc-unit">
-		        <div class="atc-unit-c">
-	            	<h1 class="title">
-	            		<span class="atc-img-tag">园林景观</span>
-	            		<router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议</router-link>
-	            	</h1>
-	            	<p class="abstract">近日，为深入贯彻落实市政府违法建设、违法销售和扬尘治理工作会议精神，戎华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议。违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会</p>
-		            <div class="meta">
-		            	<span class="com-name">
-		              		<router-link target="_blank" to="/visitor" class="avatar">
-		                		<img src="@/assets/home/index/2.png" alt="">
-		              		</router-link>筑讯中国&nbsp;·&nbsp;1小时前
-		              	</span>
-			            <span class="read">
-			                <i class='iconfont ic-list-read'></i> 2486
-			            </span>
-			            <span class="like">
-			                <i class='iconfont ic-list-like'></i> 456
-			            </span>
-		            </div>
-		        </div>
-	      	</li>
-	      	<li class="atc-unit">
-		        <div class="img-wrapper">
-		          	<img src="@/assets/home/index/c.png" />
-		          	<span class="atc-img-tag">园林景观</span>
-		        </div>
-		        <div class="atc-unit-c">
-	            	<h1 class="title">
-	            		<router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议</router-link>
-	            	</h1>
-	            	<p class="abstract">近日，为深入贯彻落实市政府违法建设、违法销售和扬尘治理工作会议精神，戎华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议。违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会违法销售和扬尘治理工作会</p>
-		            <div class="meta">
-		            	<span class="com-name">
-		              		<router-link target="_blank" to="/visitor" class="avatar">
-		                		<img src="@/assets/home/index/2.png" alt="">
-		              		</router-link>筑讯中国&nbsp;·&nbsp;1小时前
-		              	</span>
-			            <span class="read">
-			                <i class='iconfont ic-list-read'></i> 2486
-			            </span>
-			            <span class="like">
-			                <i class='iconfont ic-list-like'></i> 456
+			                <i class='iconfont ic-list-like'></i> {{item.collectCnt}}
 			            </span>
 		            </div>
 		        </div>
@@ -129,8 +32,17 @@
 </template>
 
 <script>
-	export default {
+	import {goodTime} from '@/common/js/date';
 
+	export default {
+		props: {
+			ArticleList: Array
+		},
+        filters: {
+            formatDate(time) {
+                return goodTime(time);
+            }
+        }
 	};
 </script>
 
@@ -199,7 +111,8 @@
 		      	}
 		    }
 		    .meta {
-		    	margin-top: 9px;
+		    	position: absolute;
+		    	bottom: 0;
 		    	font-size: 0;
 		      	.avatar {
 		        	height: 32px;
@@ -219,7 +132,7 @@
 			        font-size: 14px;
 		      	}
 		      	.com-name{
-		      		.v1{
+		      		i{
 		      			vertical-align: middle;
 		      			margin-right: 5px;
 		      		}

@@ -15,8 +15,6 @@
 import data from "./data"
 import SideTool from "./SideTool"
 import Article from "./Article"
-
-console.log(data);
 export default {
   data() {
     return {
@@ -26,7 +24,6 @@ export default {
   components: {
     SideTool,
     AritcleSingle: Article,
-
   }
 }
 

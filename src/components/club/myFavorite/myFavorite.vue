@@ -7,16 +7,16 @@
             <p class="name">筑讯小透明</p>
         </div>
         <div class="total-bar">
-            共84<span v-if="paramsID == 2" >收藏</span><span v-if="paramsID == 3" >条浏览记录</span>
+            共{{dataList.pageCount}}<span v-if="paramsID == 2" >收藏</span><span v-if="paramsID == 3" >条浏览记录</span>
         </div>
         <div class="content-list">
-             <div class="article-item">
+             <div class="article-item" v-for="item in dataList.pageData">
                  <div class="content">
                     <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
+                        <router-link to="">{{item.title}}</router-link>
                     </h1>
                     <div class="time-type">
-                        <span class="time">2018-08-20  14:15:24</span>
+                        <span class="time">{{item.createTime}}</span>
                         <span class="type" v-if="paramsID == 2">收藏</span>
                         <span class="type" v-if="paramsID == 3">浏览</span>
                     </div>
@@ -25,73 +25,61 @@
                     </div>
                  </div>
              </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import {collect, browse} from '@/api/request';
 	export default {
 
         data () {
             return {
                 path: this.$router.currentRoute.path,
-                paramsID: this.$route.params.id
+                paramsID: this.$route.params.id,
+                collect: [],
+                browse: [],
+                dataList: [],
+                startPage: 1,
+                pageSize: 10,
             }
         },
         watch: {
             '$route' (to, from) {
                 this.path = this.$router.currentRoute.path;
                 this.paramsID = this.$route.params.id;
-                console.log(this.$route.params.id)
+                console.log(this.$route.params.id);
+                if(this.$route.params.id==2){
+                    this.getCollect();
+                }else if(this.$route.params.id==3){
+                    this.getBrowse();
+                }
             }
     	},
-        created(){
-
+        created() {
+            this.path = this.$router.currentRoute.path;
+            this.paramsID = this.$route.params.id;
+            console.log(this.$route.params.id);
+            if(this.$route.params.id==2){
+                this.getCollect();
+            }else if(this.$route.params.id==3){
+                this.getBrowse();
+            }
+            
+        },
+        methods: {
+            async getCollect(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await collect(params);
+                this.dataList = res.data;
+                console.log(this.dataList)
+            },
+            async getBrowse(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await browse(params);
+                this.dataList = res.data;
+                console.log(this.dataList)
+            }
         }
     };
 </script>

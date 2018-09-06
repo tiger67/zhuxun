@@ -2,74 +2,20 @@
 	<div class="recommend-wrapper">
         <div class="head">
             <h1>筑讯推荐</h1>
-            <span><i class="icon-refresh"></i>换一换</span>
+            <span @click="exchange"><i class="icon-refresh"></i>换一换</span>
         </div>
         <div class="content">
             <ul>
-                <li>
+                <li v-for="item in recommendList" :key="item.articleId">
                     <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的好的客户的很到位和地位的hi我的好的客户的很到位和地位的hi我的</router-link>
+                        <router-link to="">{{item.title}}</router-link>
                     </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou1.png">
-                        <span class="name">李某人李某人李某人李</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
-                    </div>
-                </li>
-                <li>
-                    <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的</router-link>
-                    </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou2.png">
-                        <span class="name">李某人李某人李某人李</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
-                    </div>
-                </li>
-                <li>
-                    <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的</router-link>
-                    </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou2.png">
-                        <span class="name">李某人</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
-                    </div>
-                </li>
-                <li>
-                    <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的好的客户的很到位和地位的hi我的好的客户的很到位和地位的hi我的</router-link>
-                    </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou1.png">
-                        <span class="name">李某人李某人李某人李</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
-                    </div>
-                </li>
-                <li>
-                    <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的</router-link>
-                    </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou2.png">
-                        <span class="name">李某人李某人李某人李</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
-                    </div>
-                </li>
-                <li>
-                    <h2 class="line-clamp-2">
-                        <router-link to="">好的客户的很到位和地位的hi我的</router-link>
-                    </h2>
-                    <div class="bottom">
-                        <img class="avatar" src="../../../assets/tou2.png">
-                        <span class="name">李某人</span>
-                        <i></i>
-                        <span class="time">12小时前</span>
+                    <div class="com-name bottom">
+                        <img class="avatar" :src="item.photo">
+                        <span class="name">{{item.nickName}}</span>
+                        <i class="v1" v-if="item.auth_status===1 && item.user_type===1"></i>
+                        <i class="v2" v-else="item.auth_status===1 && item.user_type===0"></i>
+                        <span class="time">{{item.publishTime | formatDate}}</span>
                     </div>
                 </li>
             </ul>
@@ -78,8 +24,39 @@
 </template>
 
 <script type='text/ecmascript-6'>
-	export default {
+    import {recommend} from '@/api/request';
+    import {goodTime} from '@/common/js/date';
 
+	export default {
+        data() {
+            return {
+                recommendList: [],
+                startPage: 1,
+                pageSize: 1
+            }
+        },
+        created() {
+            this.getData();
+        },
+        methods: {
+            async getData() {
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await recommend(params);
+                this.recommendList = res.data;
+                if( res.data.length < 1 ){
+                    this.startPage = 1;
+                }
+            },
+            exchange() {
+                this.startPage++;
+                this.getData();
+            }
+        },
+        filters: {
+            formatDate(time) {
+                return goodTime(time);
+            }
+        }
 	};
 </script>
 
@@ -141,6 +118,7 @@
                         vertical-align: top;
                         font-size: 14px;
                         color: #aeb9cb;
+                        font-weight: normal;
                     }
                     .time{
                         position: absolute;
@@ -148,6 +126,7 @@
                         bottom: 5px;
                         font-size: 12px;
                         color: #ccc;
+                        font-weight: normal;
                     }
                     i{
                         display: inline-block;

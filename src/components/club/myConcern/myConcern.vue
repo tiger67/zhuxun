@@ -7,55 +7,50 @@
             <p class="name">筑讯小透明</p>
         </div>
         <div class="total-bar">
-            共32关注
+            共{{attention.pageCount}}关注
         </div>
         <div class="content-list">
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
+            <div class="author-item" v-for="item in attention.pageData" :key="item.userId">
+                <img :src="item.photo">
                 <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
+                    <h1 class="com-name">
+                        <span>{{item.nickName}}</span>
+                        <i class="v1" v-if="item.auth_status===1 && item.user_type===1"></i>
+                        <i class="v1" v-if="item.auth_status===1 && item.user_type===0"></i>
+                    </h1>
+                    <p class="line-clamp-1">{{item.introduce}}</p>
                     <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
                     <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
                 </div>
             </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">建筑，在这个社会中扮演什么角色？有什么意义？是文明的痕迹，还是居住的机器，是典雅高贵、粗犷豪放，还是极简主义、功能至上。实际，建筑作品体现着建筑师设计师们的意识形态和他们的世界观。在此，我们不。</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
+        </div>
+        <div class="paginate-wrapper" v-if="attention.pageSum>1">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-size="attention.pageSize"
+                layout="total, prev, pager, next"
+                :total="attention.pageCount">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
+    import {attention} from '@/api/request';
+
 	export default {
         data() {
             return {
-                isfollow: true
+                isfollow: true,
+                attention: [],
+                startPage: 1,
+                pageSize: 10
             }
+        },
+        created() {
+            this.getData();
         },
         methods: {
             follow() {
@@ -63,6 +58,21 @@
             },
             unfollow() {
                 this.isfollow = false;
+            },
+            async getData(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await attention(params);
+                this.attention = res.data;
+                console.log(this.attention);
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.startPage = val;
+                this.getData();
             }
         }
 	};
@@ -109,6 +119,7 @@
                 img{
                     width: 48px;
                     height: 48px;
+                    border-radius: 100%;
                 }
                 .content{
                     position: relative;
@@ -118,6 +129,10 @@
                         margin-bottom: 12px;
                         font-size: 16px;
                         color: $system-color-black;
+                        span{
+                            font-size: 16px;
+                            font-weight: normal;
+                        }
                         i{
                             display: inline-block;
                             width: 16px;

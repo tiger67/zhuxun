@@ -21,8 +21,9 @@
             <div class="left-bar">
                 <span class="required">昵称</span>
             </div>
-            <div class="right-bar">
-                <input class="input" placeholder="昵称" v-model="nickname" @blur="checkname" @focus="msgname=''"/> 
+            <div class="right-bar" :class="{'is-error': isError}">
+                <!-- <input class="input" placeholder="昵称" v-model="nickname" @blur="checkname" @focus="msgname=''"/>  -->
+                <el-input v-model="nickname" placeholder="昵称" @blur="checkname" @focus="msgname=''"></el-input>
                 <span class="msg">{{msgname}}</span>
             </div>
         </div>
@@ -31,7 +32,8 @@
                 <span class="required">手机</span>
             </div>
             <div class="right-bar">
-                <input class="input" placeholder="手机号码" v-model="phone" @blur="checkphone" @focus="msgphone=''"/>
+                <div style="display:inline-block;"><el-input v-model="phone" placeholder="手机号码"></el-input></div>
+                <!-- <input class="input" placeholder="手机号码" v-model="phone" @blur="checkphone" @focus="msgphone=''"/> -->
                 <!-- <span class="phone">135****6345</span><span class="explain">已验证</span> -->
                 <span class="msg">{{msgphone}}</span>
             </div>
@@ -41,9 +43,14 @@
                 <span>坐标</span>
             </div>
             <div class="right-bar">
-                <select class="input">
-                    <option :value="index" v-for="item,index in city">{{item}}</option>
-                </select>
+                <div class="block">
+                    <el-cascader
+                        expand-trigger="hover"
+                        :options="options"
+                        v-model="selectedOptions2"
+                        @change="handleChange">
+                    </el-cascader>
+                </div>
             </div>
         </div>
         <div class="data-li">
@@ -51,12 +58,14 @@
                 <span class="required">行业</span>
             </div>
             <div class="right-bar">
-                <select class="input">
-                    <option value ="volvo">Volvo</option>
-                    <option value ="saab">Saab</option>
-                    <option value="opel">Opel</option>
-                    <option value="audi">Audi</option>
-                </select>
+                <el-select v-model="value" placeholder="请选择">
+                    <el-option
+                      v-for="item in optionss"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                </el-select>
             </div>
         </div>
         <div class="data-li">
@@ -64,7 +73,8 @@
                 <span>简介</span>
             </div>
             <div class="right-bar">
-                <textarea v-model="desc" placeholder="介绍下自己吧（不超过200个字符）" class="input introduce" @blur="checkdesc" @focus="msgdesc=''"></textarea>
+                <!-- <textarea v-model="desc" placeholder="介绍下自己吧（不超过200个字符）" class="input introduce" @blur="checkdesc" @focus="msgdesc=''"></textarea> -->
+                <el-input type="textarea" v-model="form.desc"></el-input>
                 <span class="msg">{{msgdesc}}</span>
             </div>
         </div>
@@ -114,12 +124,76 @@
             return{
                 nickname: '',
                 phone: '',
-                city:{
-                    "sz":"宿州",
-                    "cz":"滁州",
-                    "la":"六安",
-                    "hn":"淮南",
+                form: {
+                  name: '',
+                  phone: '',
+                  desc: ''
                 },
+                isError: false,
+                options: [{
+                  value: 'zhinan',
+                  label: '指南',
+                  children: [{
+                    value: 'shejiyuanze',
+                    label: '设计原则'
+                  }, {
+                    value: 'daohang',
+                    label: '导航'
+                  }]
+                }, {
+                  value: 'zujian',
+                  label: '组件',
+                  children: [{
+                    value: 'basic',
+                    label: 'Basic'
+                  }, {
+                    value: 'form',
+                    label: 'Form'
+                  }, {
+                    value: 'data',
+                    label: 'Data'
+                  }, {
+                    value: 'notice',
+                    label: 'Notice'
+                  }, {
+                    value: 'navigation',
+                    label: 'Navigation'
+                  }, {
+                    value: 'others',
+                    label: 'Others'
+                  }]
+                }, {
+                  value: 'ziyuan',
+                  label: '资源',
+                  children: [{
+                    value: 'axure',
+                    label: 'Axure Components'
+                  }, {
+                    value: 'sketch',
+                    label: 'Sketch Templates'
+                  }, {
+                    value: 'jiaohu',
+                    label: '组件交互文档'
+                  }]
+                }],
+                optionss: [{
+                  value: '选项1',
+                  label: '黄金糕'
+                }, {
+                  value: '选项2',
+                  label: '双皮奶'
+                }, {
+                  value: '选项3',
+                  label: '蚵仔煎'
+                }, {
+                  value: '选项4',
+                  label: '龙须面'
+                }, {
+                  value: '选项5',
+                  label: '北京烤鸭'
+                }],
+                value: '',
+                selectedOptions2: [],
                 desc: '',
                 msgname: '',
                 msgphone: '',
@@ -143,18 +217,24 @@
             }
         },
         methods: {
+            handleChange(value) {
+                console.log(value);
+            },
             showCropper() {
                 this.isShowCropper = false;
             },
             checkname() {
                 if(this.nickname === ''){
                     this.msgname = "昵称不能为空";
+                    this.isError = true;
                     return false;
                 }else if(this.nickname.length>10){
                     this.msgname = "昵称不能超过十个字符";
+                    this.isError = true;
                     return false;
                 }else{
                     this.msgname = "";
+                    this.isError = false;
                     return true;
                 }
             },
@@ -431,6 +511,22 @@
                 }
             }
         }
-        
+         
+        .el-input{
+            width: 250px;
+        }
+        .el-textarea{
+            .el-textarea__inner{
+                width: 500px;
+                height: 240px;
+            }
+        }
+        .is-error{
+            .el-input__inner{
+                border-color: #f4523b;
+                background: #fff;
+                color: #f4523b;
+            }
+        }
     }
 </style>

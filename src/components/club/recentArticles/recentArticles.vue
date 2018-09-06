@@ -1,15 +1,45 @@
 <template>
 	<div class="recentArticles-wrapper">
-		<articleList></articleList>
-		<div class="load-more">
-	  		<div class="load-more-btn">加载更多</div>
+		<articleList :ArticleList="ArticleList"></articleList>
+		<div class="load-more" v-if="isloadMore">
+	  		<div class="load-more-btn" @click="loadMore">加载更多</div>
 	  	</div>
 	</div>
 </template>
 
-<script>
+<script type='text/ecmascript-6'>
 	import articleList from '@/components/articleList/articleList';
+	import { newestArticle } from '@/api/request';
+
 	export default {
+		data() {
+            return {
+                ArticleList: [],
+                startPage: 1,
+                pageSize: 10,
+                isloadMore: false
+            }
+        },
+        created() {
+            this.getArticle();
+        },
+        methods: {
+            async getArticle(){
+            	const params = { startPage: this.startPage, pageSize: this.pageSize};
+                const res = await newestArticle(params);
+
+                this.ArticleList = this.ArticleList.concat(res.data);
+                if( res.data.length < this.pageSize ){
+                	this.isloadMore = false;
+                }else{
+                	this.isloadMore = true;
+                } 
+            },
+            loadMore() {
+                this.startPage++;
+                this.getArticle();
+            }
+        },
 		components: {
 			articleList
 		}
@@ -31,10 +61,8 @@
 				height: 48px;
 				line-height: 48px;
 				text-align: center;
-				border: 1px solid #666;
-				font-size: 18px;
+				font-size: 16px;
 				color: $system-color-black;
-				cursor: pointer;
 				&:hover{
 					color: #666;
 					border-color: #999;

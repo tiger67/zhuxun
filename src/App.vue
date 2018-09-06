@@ -9,6 +9,8 @@ export default {
 
 </script>
 <style lang="scss">
+@import "@/components/sign/asign-page.scss";
+@import "@/components/sign/asign-form.scss";
 @import './common/scss/index.scss';
 .index-content {
   min-height: 800px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="pop-mask" @click.self="hide">
+  <div class="pop-mask">
     <slot></slot>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, .4);
+  background-color: rgba(0, 0, 0, .5);
   text-align: center;
   * {
     box-sizing: border-box;

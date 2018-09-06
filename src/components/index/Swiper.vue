@@ -1,6 +1,6 @@
 <template>
   <div class="swiper">
-    <div class="swp-p-container">
+    <div class="swp-container">
       <router-link v-for="(img,i) in lists" to="/hsh" :key="i" :class="classobject(i)" class="swp-img-wrap">
         <img class="swp-img" :src="img.img" />
       </router-link>
@@ -87,7 +87,7 @@ export default {
   overflow: hidden;
   position: relative;
   margin-bottom: 35px;
-  .swp-p-container {
+  .swp-container {
     position: relative;
     img {
       width: 100%;

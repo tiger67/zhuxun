@@ -7,11 +7,19 @@
         <a href="javascript:void">按照时间正序</a>
       </div>
     </div>
+    <div class="comments-list-content">
+      <comment-line v-for="(cmt,i) in lists" :key="i" :cmt="cmt" />
+    </div>
   </div>
 </template>
 <style lang="scss">
 .comments-list-w {
   margin-top: 40px;
+  padding-bottom: 200px;
+  .comments-list-content {
+    /* border: 2px solid red; */
+    min-height: 400px;
+  }
   .hd-title {
     padding-bottom: 20px;
     font-size: 17px;
@@ -35,14 +43,17 @@
 
 </style>
 <script>
-import data from "data"
-export default {
-  props: {
+import localdata from "./data"
+import CommentLine from "./CommentLine"
 
+export default {
+  props: {},
+  components: {
+    CommentLine
   },
   data() {
     return {
-
+      lists: localdata.comments
     }
   }
 }
