@@ -1,7 +1,8 @@
 <template>
   <li class="tag">
-    <router-link to="/article-list">
-      {{name}}
+    <slot v-if="$slots.default" />
+    <router-link v-else :to="`/club-list/${tag.tagId}`">
+      {{tag.tagName}}
     </router-link>
   </li>
 </template>
@@ -25,8 +26,7 @@
 <script>
 export default {
   props: {
-    url: String,
-    name: String
+    tag: Object
   }
 }
 

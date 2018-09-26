@@ -1,18 +1,45 @@
 <template>
   <div class="h-writer-page">
     <h2 class="header">全部作者</h2>
-    <div class="h-w-p-con">
+    <paging class="h-w-p-con" @getDataList="getData" :pageSize="3">
+      <!--  {{getlists}} -->
       <div class="wrt-lists clear">
-        <writer-card v-for="(w,i) in lists" :writer="w" :key="i" @follow="followRun" />
+        <writer-card v-for="(w,i) in lists" :writer="w" :key="w.userId" />
       </div>
-      <div class="load-more-btn">
-        加载更多
-      </div>
-    </div>
+      <!-- @follow="followRun" -->
+    </paging>
   </div>
 </template>
 <script>
+import API from "@/api"
+import sign from "data"
+import WriterCard from "../../common/WriterCard"
+import Paging from "@/components/common/Paging"
+export default {
+  data() {
+    return {
+      lists: []
+    }
+  },
+  components: {
+    WriterCard,
+    Paging
+  },
+  computed: {
+    /* getlists: function() { sign.isSignIned ? this.getData() : this.getData(); }
+     */
+  },
+  methods: {
+    getData({ startPage, pageSize }, cb) {
+      API["get/api/author/page"]({ startPage, pageSize }).then(res => {
+        /*console.log(res);*/
+        this.lists.push(...res.data.data);
+        cb(res.data.data.length)
 
+      })
+    }
+  }
+}
 
 </script>
 <style lang="scss">
@@ -53,28 +80,3 @@
 }
 
 </style>
-<script>
-import datalist from "../../search/data.js"
-import WriterCard from "../../common/WriterCard"
-export default {
-  data() {
-    return {
-      lists: datalist
-    }
-  },
-  components: {
-    WriterCard
-  },
-  methods: {
-    followRun: function(w, flag) {
-      let index = this.lists.indexOf(w);
-      var newone = {
-        ...w
-      }
-      newone.followed = flag;
-      this.lists.splice(index, 1, newone)
-    }
-  }
-}
-
-</script>

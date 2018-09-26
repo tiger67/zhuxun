@@ -73,8 +73,6 @@
       border-top-color: rgba(0, 0, 0, .25);
     }
   }
-
-
   .app-share-text {
     display: inline-block;
     vertical-align: middle;

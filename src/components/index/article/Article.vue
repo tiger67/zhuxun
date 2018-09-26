@@ -1,11 +1,11 @@
 <template>
   <div class="article-single">
-    <article-header :atc="atc" />
+    <article-header v-if="atc&&atc.title" :atc="atc" />
     <div class="atc-content">
       <atc-content :atc="atc" />
     </div>
     <div class="comment-panel">
-      <comment-panel :comments="atc.comments" :author="atc.author" />
+      <comment-panel :atc="atc" />
     </div>
   </div>
 </template>
@@ -32,9 +32,7 @@ export default {
     atc: Object
   },
   data() {
-    return {
-
-    }
+    return {}
   },
   components: {
     CommentPanel,

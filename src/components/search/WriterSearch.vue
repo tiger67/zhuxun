@@ -21,26 +21,39 @@
 
 </style>
 <script>
-import datalist from "./data"
+import search from "./searchData"
 import WriterCard from "../common/WriterCard"
+import API from "@/api"
 export default {
   data() {
     return {
-      lists: datalist
+      lists: [],
+      s: search
     }
   },
   components: {
     WriterCard
   },
+  mounted() {
+    this.s.key = this.$route.params.key;
+    this.search();
+  },
   methods: {
-    followRun: function(w, flag) {
+    followRun(w, flag) {
       let index = this.lists.indexOf(w);
       var newone = {
         ...w
       }
       newone.followed = flag;
       this.lists.splice(index, 1, newone)
-
+    },
+    search() {
+      API["get/api/search/searchUser"]({ pageCurrent: 1, pageSize: 10, key: this.s.key }).then(res => {
+        //console.log(res);
+        if (res.data.code === 0) {
+          this.lists = res.data.data.pageData;
+        }
+      })
     }
   }
 }

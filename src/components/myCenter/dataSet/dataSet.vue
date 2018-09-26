@@ -1,20 +1,12 @@
 <template>
 	<div class="dataSet-wrapper">
-        <div class="cropper-wrapper" v-if="isShowCropper" @click="showCropper">
-            <div class="cropper-content">
-                <div class="cropper">
-                    <vueCropper ref="cropper" :img="option.img" :outputSize="option.size" :outputType="option.outputType" :autoCrop="option.autoCrop" :autoCropWidth="option.autoCropWidth" :autoCropHeight="option.autoCropHeight" :fixed="option.fixed" :fixedNumber="option.fixedNumber" :centerBox="option.centerBox"></vueCropper>
-                </div>
-                <div class="fbtn1 m-follow-btn" @click="finish('blob')">确定</div>
-            </div>
-        </div>
         <div class="data-li">
             <div class="left-bar">
-                <img src="../../../assets/tou2@2x.png">
+                <img :src="imageUrl">
             </div>
             <div class="right-bar">
                 <label class="fbtn3" for="uploads">更改头像</label>
-                <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
+                <input type="file" id="uploads" @change="upload($event)" style="display:none">
             </div>
         </div>
         <div class="data-li">
@@ -22,7 +14,6 @@
                 <span class="required">昵称</span>
             </div>
             <div class="right-bar" :class="{'is-error': isError}">
-                <!-- <input class="input" placeholder="昵称" v-model="nickname" @blur="checkname" @focus="msgname=''"/>  -->
                 <el-input v-model="nickname" placeholder="昵称" @blur="checkname" @focus="msgname=''"></el-input>
                 <span class="msg">{{msgname}}</span>
             </div>
@@ -32,10 +23,9 @@
                 <span class="required">手机</span>
             </div>
             <div class="right-bar">
-                <div style="display:inline-block;"><el-input v-model="phone" placeholder="手机号码"></el-input></div>
-                <!-- <input class="input" placeholder="手机号码" v-model="phone" @blur="checkphone" @focus="msgphone=''"/> -->
-                <!-- <span class="phone">135****6345</span><span class="explain">已验证</span> -->
-                <span class="msg">{{msgphone}}</span>
+                <!-- <div style="display:inline-block;"><el-input v-model="phone" placeholder="手机号码"></el-input></div> -->
+                <div style="display:inline-block;"><span class="phone">{{mobile}}</span><span class="explain">已验证</span></div>
+                <!-- <span class="msg">{{msgphone}}</span> -->
             </div>
         </div>
         <div class="data-li">
@@ -45,10 +35,11 @@
             <div class="right-bar">
                 <div class="block">
                     <el-cascader
-                        expand-trigger="hover"
-                        :options="options"
-                        v-model="selectedOptions2"
-                        @change="handleChange">
+                        :options="categoryList"
+                        :props="cityprops"
+                        v-model="selectedcityId"
+                        @change="handleChange"
+                        ref="cityWrapper">
                     </el-cascader>
                 </div>
             </div>
@@ -58,14 +49,15 @@
                 <span class="required">行业</span>
             </div>
             <div class="right-bar">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select v-model="selectedIndustry" placeholder="请选择" @change="industryChange">
                     <el-option
-                      v-for="item in optionss"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      v-for="item in industryList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
                     </el-option>
                 </el-select>
+                <span class="msg">{{msgindustry}}</span>
             </div>
         </div>
         <div class="data-li">
@@ -73,8 +65,7 @@
                 <span>简介</span>
             </div>
             <div class="right-bar">
-                <!-- <textarea v-model="desc" placeholder="介绍下自己吧（不超过200个字符）" class="input introduce" @blur="checkdesc" @focus="msgdesc=''"></textarea> -->
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="desc" placeholder="介绍下自己吧（不超过200个字符）" @blur="checkdesc"></el-input>
                 <span class="msg">{{msgdesc}}</span>
             </div>
         </div>
@@ -83,28 +74,23 @@
                 <span>社交账号</span>
             </div>
             <div class="right-bar">
+                <!-- <bindAccount :userData="userData" @bindStatus="bindStatus"></bindAccount> -->
                 <ul>
                     <li class="media-li">
-                        <i class="icon-weibo"></i>
-                        <span class="name"></span>
-                        <span class="btn">绑定微博>></span>
+                        <weiboBind :userData="userData" @bindStatus="bindStatus"></weiboBind>
                     </li>
                     <li class="media-li">
-                        <i class="icon-weixin-ed"></i>
-                        <span class="name">筑讯小飞侠</span>
-                        <span class="btn relieve">解除绑定</span>
+                        <weixinBind :userData="userData" @bindStatus="bindStatus"></weixinBind>
                     </li>
                     <li class="media-li">
-                        <i class="icon-qq" style="font-size:30px;"></i>
-                        <span class="name"></span>
-                        <span class="btn">绑定微博>></span>
+                        <qqBind :userData="userData" @bindStatus="bindStatus"></qqBind>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="data-li">
             <div class="left-bar">
-                <div class="fbtn2">保存</div>
+                <div class="fbtn2" @click="saveData">保存</div>
             </div>
             <div class="right-bar">
                 
@@ -116,120 +102,126 @@
 
 <script>
     import vueCropper from 'vue-cropper';
-
-    const reg = /^1[0-9][0-9]{9}$/;
+    import {singleImageUpload, city, dataIndustry, dataSet, dataSetsave} from '@/api/request';
+    import bindAccount from './bindAccount';
+    import weiboBind from './weiboBind';
+    import weixinBind from './weixinBind';
+    import qqBind from './qqBind';
+    import common from '@/components/sign/common';
 
 	export default {
         data() {
             return{
+                user: JSON.parse(sessionStorage.getItem("user")),
+                imageUrl: '',
+                userData: {},
                 nickname: '',
-                phone: '',
-                form: {
-                  name: '',
-                  phone: '',
-                  desc: ''
-                },
-                isError: false,
-                options: [{
-                  value: 'zhinan',
-                  label: '指南',
-                  children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则'
-                  }, {
-                    value: 'daohang',
-                    label: '导航'
-                  }]
-                }, {
-                  value: 'zujian',
-                  label: '组件',
-                  children: [{
-                    value: 'basic',
-                    label: 'Basic'
-                  }, {
-                    value: 'form',
-                    label: 'Form'
-                  }, {
-                    value: 'data',
-                    label: 'Data'
-                  }, {
-                    value: 'notice',
-                    label: 'Notice'
-                  }, {
-                    value: 'navigation',
-                    label: 'Navigation'
-                  }, {
-                    value: 'others',
-                    label: 'Others'
-                  }]
-                }, {
-                  value: 'ziyuan',
-                  label: '资源',
-                  children: [{
-                    value: 'axure',
-                    label: 'Axure Components'
-                  }, {
-                    value: 'sketch',
-                    label: 'Sketch Templates'
-                  }, {
-                    value: 'jiaohu',
-                    label: '组件交互文档'
-                  }]
-                }],
-                optionss: [{
-                  value: '选项1',
-                  label: '黄金糕'
-                }, {
-                  value: '选项2',
-                  label: '双皮奶'
-                }, {
-                  value: '选项3',
-                  label: '蚵仔煎'
-                }, {
-                  value: '选项4',
-                  label: '龙须面'
-                }, {
-                  value: '选项5',
-                  label: '北京烤鸭'
-                }],
-                value: '',
-                selectedOptions2: [],
+                mobile: '',
                 desc: '',
-                msgname: '',
-                msgphone: '',
-                msgdesc: '',
-                headImg: '',
-                option: {
-                    img: '',                //裁剪图片的地址
-                    size: 1,                //裁剪生成图片的质量
-                    outputType: 'png',      //裁剪生成图片的格式
-                    autoCrop: true,         //是否默认生成截图框
-                    autoCropWidth: 200,     //默认生成截图框宽度
-                    autoCropHeight: 200,    //默认生成截图框高度
-                    fixed: true,            //是否开启截图框宽高固定比例
-                    fixedNumber: [1, 1],    //截图框的宽高比例
-                    centerBox: true         //截图框是否被限制在图片里面
+                isError: false,
+                categoryList: [],
+                cityId: 0,
+                cityprops: {
+                    value: 'id',
+                    label: 'name',
                 },
-                isShowCropper: false,
-                fileUpload: null,
-                fileinfo: {},
-                fileName: '',  //本机文件地址
+                industryList: [],
+                selectedIndustry: null,
+                selectedcityId: [],
+                selectedIndustryLabel: '',
+                selectedcityLabel: '',
+                msgname: '',
+                msgdesc: '',
+                msgindustry: '',
+                headImg: ''
             }
         },
+        created() {
+            this.cityList();
+            this.dataIndustry();
+            this.getData();
+        },
         methods: {
+            async getAvatar(file){console.log(file);
+                const res = await singleImageUpload(file);
+                this.imageUrl = res.data;
+                console.log(file);
+            },
+            async getData(){
+                const res = await dataSet();
+                console.log(res.data);
+                this.userData = res.data;
+                this.nickname = res.data.userName;
+                this.imageUrl = res.data.photo;
+                this.desc = res.data.introduce;
+                this.mobile = res.data.mobile;
+                //坐标
+                const cid = res.data.cityId.toString();
+                const pid = cid.slice(0, 2)+'0000';
+                this.selectedcityId = [parseInt(pid), parseInt(cid)];
+                //行业
+                if(res.data.industryCode!=0){
+                    this.selectedIndustry = res.data.industryCode;
+                }
+            },
+            async cityList(){
+                const res = await city();
+                console.log(res.data);
+                this.categoryList = res.data;
+            },
+            async dataIndustry(){
+                const res = await dataIndustry();
+                console.log(res.data);
+                this.industryList = res.data;
+            },
+            async dataSave(params){
+                const res = await dataSetsave(params);
+                console.log(res);
+                this.$message({
+                    type: 'success',
+                    message: res.data
+                });
+            },
+            upload(event){
+                console.log(event.target.files);
+                const files = event.target.files[0];
+                let fileData = new FormData();
+                fileData.append("file", files);
+                console.log(fileData);//true
+                console.log(fileData.get("file"));
+
+                const fileImage = fileData.get("file");
+                //首先判断是否是图片
+                if(!/image\/\w+/.test(fileImage.type)){
+                    this.$message({
+                        type: 'error',
+                        message: '上传的不是图片'
+                    });
+                    return false;
+                }
+                //在此限制图片的大小
+                const size = fileImage.size;  
+                if( size > 3*1024*1024 ){  
+                   this.$message({
+                        type: 'error',
+                        message: '图片不能大于3M'
+                    });
+                   return false;
+                }
+                this.getAvatar(fileData);
+            },
             handleChange(value) {
+                this.cityId = value[1];
                 console.log(value);
             },
-            showCropper() {
-                this.isShowCropper = false;
+            industryChange(value) {
+                console.log(value);
+                this.checkindustry();
             },
             checkname() {
-                if(this.nickname === ''){
-                    this.msgname = "昵称不能为空";
-                    this.isError = true;
-                    return false;
-                }else if(this.nickname.length>10){
-                    this.msgname = "昵称不能超过十个字符";
+                var reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]{1,32}$/;
+                if(!reg.test(this.nickname)){
+                    this.msgname = "昵称由汉字字母数字下划线组成，长度1~32";
                     this.isError = true;
                     return false;
                 }else{
@@ -238,15 +230,12 @@
                     return true;
                 }
             },
-            checkphone() {
-                // if(this.phone === ''){
-                //     this.msgphone = "手机号码不能为空";
-                // }
-                if(!reg.test(this.phone)){
-                    this.msgphone = "手机号码格式不正确";
+            checkindustry() {
+                if(!this.selectedIndustry){
+                    this.msgindustry = "请选择行业";
                     return false;
                 }else{
-                    this.msgphone = "";
+                    this.msgindustry = "";
                     return true;
                 }
             },
@@ -259,109 +248,54 @@
                     return true;
                 }
             },
-            uploadImg (e, num) {
-                //上传图片
-                console.log('uploadImg');
-                // this.option.img
-                var file = e.target.files[0];
-                this.fileName = file.name;
-                if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-                     alert('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
-                     return false
-                 }
-                var reader = new FileReader();
-                reader.onload = (e) => {
-                    let data
-                    if (typeof e.target.result === 'object') {
-                        // 把Array Buffer转化为blob 如果是base64不需要
-                        data = window.URL.createObjectURL(new Blob([e.target.result]))
-                    } else {
-                        data = e.target.result
-                    }
-                    if (num === 1) {
-                        this.option.img = data
-                    } else if (num === 2) {
-                        this.example2.img = data
-                    }
-                }
-                // 转化为base64
-                // reader.readAsDataURL(file)
-                // 转化为blob
-                reader.readAsArrayBuffer(file);
-                this.isShowCropper = true;
-            },
-             finish(type) { 
-                console.log('finish');
-                let formData = new FormData();
-                // 输出 
-                if (type === 'blob') { 
-                  this.$refs.cropper.getCropBlob((data) => { 
-                    let img = window.URL.createObjectURL(data) ;
-                    console.log(img);
-                    this.model = true; 
-                    this.modelSrc = img; 
-                    formData.append("file", data, this.fileName);
-                    console.log(data);
-                    console.log(this.fileName);
-                    console.log(formData);
-                    this.isShowCropper = false;
-                    // this.$http.post(Api.uploadSysHeadImg.url, formData, {contentType: false, processData: false, headers:{‘Content-Type‘: ‘application/x-www-form-urlencoded‘}})
-                    // .then((response)=>{
-                    //   var res = response.data;
-                    //   if(res.success == 1){
-                    //     $(‘#btn1‘).val(‘‘);
-                    //     _this.imgFile = ‘‘;
-                    //     _this.headImg = res.realPathList[0];  //完整路径
-                    //     _this.uploadImgRelaPath = res.relaPathList[0];  //非完整路径
-                    //     _this.$message({　　//element-ui的消息Message消息提示组件
-                    //       type: ‘success‘,
-                    //       message: ‘上传成功‘
-                    //     });
-                    //   }
-                    // })
-                  }) 
-                } else { 
-                  this.$refs.cropper.getCropData((data) => { 
-                    this.model = true; 
-                    this.modelSrc = data; 
-                  }) 
+            saveData() {
+                if(this.checkname() && this.checkindustry() && this.checkdesc()){
+                    const form = {
+                        'photo': this.imageUrl,
+                        'nickName': this.nickname,
+                        'cityId': this.selectedcityId[1],
+                        'industryCode': this.selectedIndustry,
+                        'introduce': this.desc
+                    };
+                    this.selectedcityLabel = this.getCascaderObj(this.selectedcityId, this.categoryList)[1].name;
+                    this.selectedIndustryLabel = this.getSelectObj(this.selectedIndustry, this.industryList).name;
+                    const uform = {
+                        'photo': this.imageUrl,
+                        'nickName': this.nickname,
+                        'cityName': this.selectedcityLabel,
+                        'industry': this.selectedIndustryLabel,
+                        'introduce': this.desc
+                    };
+                    this.dataSave(form);      //保存
+                    common.putUser(uform);  //更改缓存的用户信息
                 } 
-              }, 
-            // 确定裁剪图片
-            onCubeImg() {
-              // 获取cropper的截图的base64 数据
-              this.$refs.cropper.getCropData(data => {
-                this.fileinfo.url = data
-                this.isShowCropper = false
-
-               //先将显示图片地址清空，防止重复显示
-                this.option.img = ''
-
-               //将剪裁后base64的图片转化为file格式
-                let file = this.convertBase64UrlToBlob(data)
-                file.name = this.fileUpload.name
-
-                //将剪裁后的图片执行上传
-                this.uploadFile(file).then(res => {
-                  this.form.content = res.file_id    //将上传的文件id赋值给表单from的content
-                })
-
-              })
             },
-            // 将base64的图片转换为file文件
-            convertBase64UrlToBlob(urlData) {
-              let bytes = window.atob(urlData.split(',')[1]);//去掉url的头，并转换为byte
-              //处理异常,将ascii码小于0的转换为大于0
-              let ab = new ArrayBuffer(bytes.length);
-              let ia = new Uint8Array(ab);
-              for (var i = 0; i < bytes.length; i++) {
-                ia[i] = bytes.charCodeAt(i);
-              }
-              return new Blob([ab], { type: 'image/jpeg' });
+            bindStatus(val){
+                console.log(val);
+                if(val===1){
+                    this.$router.push('/myCenter/dataSet');
+                }
+                this.getData();
+            },
+            getCascaderObj(val, opt) {
+                return val.map(function (value) {
+                    for (var itm of opt) {
+                        if (itm.id == value) { opt = itm.children; return itm; }
+                    }
+                    return null;
+                });
+            },
+            getSelectObj(val, opt){
+                return this.industryList.find((item) => {
+                    return item.id === val;
+                });
             }
         },
         components: {
-            vueCropper
+            bindAccount,
+            weiboBind,
+            weixinBind,
+            qqBind
         }
 	};
 </script>
@@ -371,34 +305,7 @@
     
     .dataSet-wrapper{
         padding: 40px 0 123px 0;
-        .cropper-wrapper{
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,.8);
-            z-index: 1000;
-            text-align: center;
-            .cropper-content{
-                width: 500px;
-                height: 420px;
-                margin: 0 auto;
-                margin-top: 14%;
-                background: #fff;
-                padding-top: 80px;
-                .cropper{
-                    width: 350px;
-                    height: 300px;
-                    margin: 0 auto;
-                    
-                }
-                .fbtn1{
-                    margin-top: 30px;
-                }
-            }
-            
-        }
+
         .data-li{
             display: flex;
             align-items: center;
@@ -503,7 +410,6 @@
                     font-size: 14px;
                     color: #4285F4;
                     float: right;
-                    line-height: 32px;
                     cursor: pointer;
                     &.relieve{
                         color: #F4523B;
@@ -525,7 +431,6 @@
             .el-input__inner{
                 border-color: #f4523b;
                 background: #fff;
-                color: #f4523b;
             }
         }
     }

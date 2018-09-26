@@ -1,14 +1,14 @@
  import Home from '@/components/Home'
- import SignIn from '@/components/sign/SignIn'
- import SignUp from '@/components/sign/SignUp'
+ import SignIn from '@/components/sign/signin/Index'
+ import SignUp from '@/components/sign/signup/Index'
  import ForgetPassword from '@/components/sign/ForgetPassword'
  import Sign from '@/components/sign/Sign'
  import Index from '@/components/index/index'
  import Search from '@/components/search'
  import ArticleSearch from '@/components/search/ArticleSearch'
  import WriterSearch from '@/components/search/WriterSearch'
- import Article from '@/components/index/article'
- import InfoArticle from '@/components/index/article/InfoArticle'
+ import Article from '@/components/index/article/page'
+ import InfoArticle from '@/components/index/article/info-page'
  import Writer from '@/components/index/writer'
  import Tag from '@/components/index/tag'
  import NewsInfo from '@/components/index/news-info'
@@ -33,12 +33,12 @@
          component: NewsInfo
        },
        {
-         path: 'article',
+         path: 'article/:id',
          name: 'Article',
          component: Article
        },
        {
-         path: 'info-article',
+         path: 'info-article/:id',
          name: 'InfoArticle',
          component: InfoArticle
        },
@@ -52,7 +52,7 @@
          component: Tag
        },
        {
-         path: 'article-list',
+         path: 'club-list/:id',
          name: 'ArticleList',
          component: ArticleList
        }
@@ -87,6 +87,14 @@
        }, {
          path: "article",
          name: "articlesearch",
+         component: ArticleSearch
+       }, {
+         path: "writer/:key",
+         name: "wirtersearch-key",
+         component: WriterSearch
+       }, {
+         path: "article/:key",
+         name: "articlesearch-key",
          component: ArticleSearch
        }]
      }]

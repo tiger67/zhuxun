@@ -7,6 +7,9 @@
 <script type='text/ecmascript-6'>
 	import articleList from '@/components/articleList/articleList';
 	export default {
+		props: {
+			listContent: Array
+		},
 		components: {
 			articleList
 		}

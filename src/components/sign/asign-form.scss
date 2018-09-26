@@ -1,6 +1,6 @@
 .sign-form {
   .title {
-    margin: 10px 0 30px;
+    margin: 0px 0 30px;
     font-size: 23px;
     color: #666;
     font-weight: 400;
@@ -26,6 +26,37 @@
         left: 10px;
         font-size: 18px;
         color: #969696;
+      }
+      .error-tip {
+        position: absolute;
+        right: 0;
+        top: 0;
+        .error-tip-c {
+          position: absolute;
+          top: 6px;
+          padding: 10px;
+          white-space: nowrap;
+          border: 1px solid red;
+          border-radius: 30px;
+          background: #FFF;
+        }
+      }
+      .sign-resend {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 100px;
+        height: 36px;
+        font-size: 13px;
+        color: #fff;
+        background-color: #42c02e;
+        border-radius: 20px;
+        line-height: 36px;
+        opacity: .5;
+      }
+
+      .sign-resend.active {
+        opacity: 1;
       }
       input {
         width: 100%;

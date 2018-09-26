@@ -7,9 +7,9 @@ export default {
     return {}
   },
   methods: {
-    send() {
-
-    }
+    async sendSmsVerifyCode() {
+      return await API["post/api/sendSmsVerifyCode"]({ mobile: this.mobile, type: 1 });
+    },
   }
 }
 

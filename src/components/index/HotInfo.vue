@@ -6,7 +6,7 @@
     </h5>
     <ul>
       <li class="info-line" v-for="f in lists.slice(0,8) ">
-        <router-link to="/info-article"><span class="time">{{f.time}}</span> {{f.info}}</router-link>
+        <router-link :to="`/info-article/${f.articleId}`"><span class="time">{{f.publishTime|parse}}</span> {{f.title}}</router-link>
       </li>
     </ul>
   </div>
@@ -20,7 +20,7 @@
     border-bottom: 1px solid #f5f5f5;
   }
   .info-line {
-    padding-left: 58px;
+    padding-left: 68px;
     margin-bottom: 13px;
     position: relative;
     .time {
@@ -41,23 +41,26 @@
 
 </style>
 <script>
+import Time from "../common/utils/time"
+import API from "@/api"
 export default {
   data() {
     return {
       lists: [
-        { time: "1小时前", info: "把澡堂修在火车站里，坂茂设计日本女川町火车站正式启用", url: "/article" },
-        { time: "1小时前", info: "中金：上调阅文集团目标价，看涨逾20%", url: "/article" },
-        { time: "2小时前", info: "在“拆迁办”工作是一种什么体验", url: "/article" },
-        { time: "3小时前", info: "遍布镜面的科威特CreditOne大楼", url: "/article" },
-        { time: "3小时前", info: "沙托纳西恩小学/Savioz Fabrizzi建筑事务所", url: "/article" },
-        { time: "3小时前", info: "谷歌AI可为50种眼疾推荐治疗方案，准确率高达94%", url: "/article" },
-        { time: "5小时前", info: "特斯拉大股东富达基金二季度减持21%", url: "/article" },
-        { time: "5小时前", info: "专访BUMO郭强：电报群多为羊毛党，基于DAC的原生社区才有价值", url: "/article" },
-        { time: "5小时前", info: "二手书交易平台「阅邻」完成 A 轮融资", url: "/article" },
-        { time: "5小时前", info: "二手书交易平台「阅邻」完成 A 轮融资", url: "/article" },
+
       ]
     }
   },
+  mounted() {
+    API["get/api/hotNews/page"]({ startPage: 1, pageSize: 10 }).then(res => {
+     /* if (res.data.code === 0) { console.log(res.data) }
+*/
+       this.lists = res.data.data;
+    })
+  },
+  filters: {
+    parse: Time.parse
+  }
 }
 
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="comment-wrapper">
     <div class="comment-list">
-      <div class="comment-item">
+      <!-- <div class="comment-item">
         <h1>华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</h1>
         <div class="main">
           <div class="head clearfix">
@@ -27,35 +27,52 @@
             </transition>
           </div>
         </div>
-      </div>
-      <div class="comment-item">
-        <h1>华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</h1>
+      </div> -->
+      <div class="comment-item" v-for="(item, index) in commentList.pageData" :key="index">
+        <h1 :commentArticleType="item.commentArticleType">
+          <router-link :to="'/article/'+item.articleId">{{item.title}}</router-link>
+        </h1>
         <div class="main">
           <div class="head clearfix">
-            <img src="../../../../assets/tou4.png">
+            <img :src="item.commentUserPhoto">
             <div class="info-wrapper">
               <div class="com-name">
-                <span>筑讯中国</span><i class="v1"></i>
+                <span>{{item.commentUserName}}</span>
+                <i class="v1" v-if="item.auth_status===1 && item.user_type===1"></i>
+                <i class="v2" v-else="item.auth_status===1 && item.user_type===0"></i>
               </div>
-              <p class="floor">1楼 · 6小时前</p>
+              <p class="floor">{{index+1}}楼 · {{item.commentTime | formatDate}}</p>
             </div>
           </div>
           <div class="comment-bar">
-            <div class="reply-others-comment">
+            <div class="reply-others-comment" v-if="item.quoteContent.length>0">
               <p class="comment-content">
-                <span class="name">情依依：</span> Sed fringilla et quam a tempus. Nam volutpat augue eu lorem maximus, id luctus dolor venenatis. Morbi et vestibulum orci. Donec pretium suscipit massa quis convallis. Etiam et est dolor. Quisque eget lectus id risus vulputate venenatis. Praesent varius facilisis lorem id sagittis. Nullam vel elit quis neque dapibus lacinia.
+                <span class="name">{{item.replyUserName}}：</span> {{item.quoteContent}}
               </p>
-              <p class="time">2分钟前</p>
+              <p class="time">{{item.replyTime | formatDate}}</p>
             </div>
-            <p class="reply-p">说中文好吗？</p>
+            <p class="reply-p">{{item.commentContent}}</p>
             <div class="operation">
-              <i class="icon-delete"></i>
-              <span class="praise-wrap"><i :class="{'icon-like':isPraise===0,'icon-liked': isPraise===1}" @click="praise"></i><span>122</span></span>
+              <i class="icon-comment" @click="replyComment(index)" v-if="item.quoteContent.length===0"></i>
+              <span class="praise-wrap">
+                <i class="icon-like" v-if="item.isZan===0" @click="likeComment(item.commentId, index)"></i>
+                <transition name="like">
+                  <i class="icon-liked" v-if="item.isZan===1"></i>
+                </transition>
+                <span>{{item.zanNum}}</span>
+              </span>
+              <i class="icon-delete" @click="delAlert(item.commentId, index)"></i>
             </div>
+            <transition name="reply">
+              <div class="reply-form" v-show="item.activeName">
+                <input class="input" v-model="commentInput"></input>
+                <span class="submit" @click="submitComment(item.articleId, item.commentArticleType, item.commentId)">提交</span>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
-      <div class="comment-item">
+      <!-- <div class="comment-item">
         <h1>华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</h1>
         <div class="main">
           <div class="head clearfix">
@@ -81,27 +98,107 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+    </div>
+    <div class="com-empty-status" v-if="commentList.pageCount==0">
+        <img src="@/common/img/empty.png">
+        <p>暂无评论</p>
+    </div>
+    <div class="paginate-wrapper" v-if="commentList.pageSum>1">
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :page-size="commentList.pageSize"
+            layout="total, prev, pager, next"
+            :total="commentList.pageCount">
+        </el-pagination>
     </div>
   </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      replyBox: false,
-      isPraise: 0
-    }
-  },
-  methods: {
-    replyComment() {
-      this.replyBox = !this.replyBox;
+  import { delComment, replyComment, likeComment} from '@/api/request';
+  import {goodTime} from '@/common/js/date';
+  import axios from 'axios';
+
+  export default {
+    props: {
+      commentList: Object
     },
-    praise() {
-      this.isPraise = 1;
+    data() {
+      return {
+        commentInput: ''
+      }
+    },
+    created() {
+
+    },
+    methods: {
+      
+      async delComment(id, index){
+          const res = await delComment(id);
+          this.$message({
+              type: 'success',
+              message: res.data,
+              duration: 1000,
+          });
+          this.commentList.pageData.splice(index, 1);
+          this.commentList.pageCount--;
+      },
+      async submitComment(articleId, type, replyCommentId){
+          const params = { 'articleId': articleId, 'type': type, 'content': this.commentInput, 'replyCommentId': replyCommentId };
+          const res = await replyComment(params);
+          this.commentInput = '';
+          this.$emit('submitComment', true);
+      },
+      // submitComment(articleId, type, replyCommentId){
+      //   const params = { 'articleId': articleId, 'type': type, 'content': this.commentInput, 'replyCommentId': replyCommentId };
+      //   const headers = {};
+      //   const user = sessionStorage.getItem("user");
+      //     headers.AppId = JSON.parse(user)['appId'];
+      //     headers.Authorization = "ticket " + JSON.parse(user)['access_ticket'];
+      //     console.log(headers)
+      //   axios.post('http://172.25.210.98/api/comment/add', {params:params}, {headers:headers})
+      //   .then(function (response) {
+      //     console.log(response);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      //},
+      async likeComment(id, index){
+          const params = { 'commentId': id };
+          console.log(params);
+          const res = await likeComment(params);
+          console.log(res);
+
+          this.commentList.pageData[index].isZan = 1;
+          this.commentList.pageData[index].zanNum++ ;
+      },
+      delAlert(id,index){
+        const _this = this;
+          this.$msgbox.confirm('你确定要删除此评论?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+          }).then(() => {
+              _this.delComment(id,index);
+          }).catch(() => {        
+          });
+      },
+      replyComment(index) {
+          this.commentList.pageData[index].activeName = !this.commentList.pageData[index].activeName;
+      },
+      handleCurrentChange(val) {
+          console.log(`当前页: ${val}`);
+          this.$emit('commentPage', val);
+      }
+    },
+    filters: {
+        formatDate(time) {
+            return goodTime(time);
+        }
     }
-  }
-};
+  };
 
 </script>
 <style lang="scss">
@@ -119,6 +216,11 @@ $system-bgcolor: #fafafa;
         font-size: 18px;
         color: $system-color-black;
         font-weight: bold;
+        &:hover{
+            a{
+                color: #4285F4;
+            }
+        }
       }
       .main {
         padding: 20px 20px 0 20px;
@@ -129,6 +231,7 @@ $system-bgcolor: #fafafa;
             float: left;
             width: 40px;
             height: 40px;
+            border-radius: 100%;
           }
           .info-wrapper {
             float: left;
@@ -193,8 +296,8 @@ $system-bgcolor: #fafafa;
               cursor: pointer;
             }
             .praise-wrap {
-              margin-left: 15px;
-              font-size: 14px;
+              margin: 0 15px;
+              font-size: 0;
               color: #666;
               i {
                 font-size: 18px;
@@ -202,7 +305,16 @@ $system-bgcolor: #fafafa;
               }
               span {
                 margin-left: 4px;
+                font-size: 14px;
               }
+              .like-enter-active, .like-leave-active {
+                font-size: 20px;
+                transition: opacity .2s;
+              }
+              .like-enter, .like-leave-to {
+                opacity: 0
+              }
+              
             }
           }
           .reply-form {
@@ -211,10 +323,10 @@ $system-bgcolor: #fafafa;
             border: 1px solid #eee;
             margin: 10px 0 20px 0;
             background: $system-bgcolor;
-            transition: all 0.5s;
+            transition: all 0.3s;
             &.reply-enter-active,
             &.reply-leave-active {
-              transition: all 0.5s;
+              transition: all 0.3s;
               height: 48px;
               margin: 10px 0 20px 0;
               .input {

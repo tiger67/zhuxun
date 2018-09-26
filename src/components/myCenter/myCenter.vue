@@ -9,14 +9,16 @@
 				<div class="left">
 					<div class="header">
 						<div class="com-avatar">
-							<img src="../../assets/tou@2x.png">
+							<img :src="user.u.photo">
 						</div>
 						<div class="com-name">
-							<span>筑讯中国</span><i class="v2"></i>
+							<span>{{user.u.nickName}}</span>
+              <i class="v1" v-if="user.u.auth_status===1 && user.u.user_type===1"></i>
+              <i class="v2" v-if="user.u.auth_status===1 && user.u.user_type===0"></i>
 						</div>
-						<p class="intro">深圳 | 建筑爱好者</p>
+						<p class="intro line-clamp-1">{{user.u.cityName}} <span v-if="user.u.industry">|</span> {{user.u.industry}}</p>
 						<div class="fbtn2">
-							<router-link to="/editor/new" target="_blank">写文章</router-link>
+							<router-link to="/editor/0" target="_blank">写文章</router-link>
 						</div>
 					</div>
 					<ul class="menu-list">
@@ -40,8 +42,18 @@
 </template>
 <script>
 import header from '@/components/header/header';
+import data from "data";
 
 export default {
+  data() {
+    return {
+      user: data,
+    }
+  },
+  created() {
+    // this.user = JSON.parse(sessionStorage.getItem("user"));
+    // console.log(this.user)
+  },
   components: {
     'v-header': header
   }
@@ -84,6 +96,7 @@ $system-color-black: #222;
         .intro {
           font-size: 14px;
           color: #ccc;
+          padding: 0 30px;
         }
         .fbtn2 {
           margin-top: 44px;

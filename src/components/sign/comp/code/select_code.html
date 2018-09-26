@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script src="js/jquery-1.7.2.min.js"></script>
+  <title>验证码</title>
+</head>
+
+<body>
+  <div style="text-align:center;position:relative;">
+    <!--<h2>这是点击的验证码</h2> -->
+    <!-- 这是点击的验证码 -->
+    <img id="codeT3" src="" style="border:2px solid red;" />
+    </br>
+    <select id="codeSelect" style="display: none;"></select>
+    <a href="javascript:void(0);" onclick="getCodeTree();"><img  src="images/refresh.png" style="position:absolute;right:40%;top:0; width:20px; height: 20px;"/></a>
+  </div>
+  <script type="text/javascript">
+  //点击次数
+  var number = 0;
+
+  //获取验证码3
+  function getCodeTree() {
+    number = 0;
+    $(".zhezhao").remove();
+    document.getElementById("codeSelect").options.length = 0;
+    $.ajax({
+      type: "get",
+      url: "http://172.25.210.6:8081/api/getVerifyCode?flag=" + Math.random(),
+      data: {},
+
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+        $("#codeT3").attr("src", "data:image/jpeg;base64," + data);
+      }
+    });
+
+  }
+
+  $(function() {
+    getCodeTree();
+    /*$.ajax({  
+        type:"get",      
+        url:"http://172.25.210.6:8081/api/getVerifyCode?flag="+Math.random(),
+        data : {},
+       
+        xhrFields: {
+            withCredentials: true
+        },
+        success : function(data) {
+           $("#codeT3").attr("src","data:image/jpeg;base64,"+data);
+        }
+    });  */
+    $("#codeT3").bind("click", function(ev) {
+      var oEvent = ev || event;
+      //var number = $("#codeSelect option").length;
+      number++;
+
+      if (number > 4) {
+        return;
+      }
+
+      var x = oEvent.pageX;
+      var y = oEvent.pageY;
+      var img = document.getElementById('codeT3'); //获取图片的原点
+      var nodex = getNodePosition(img)[0]; //原点x 与原点y
+      var nodey = getNodePosition(img)[1];
+
+
+      var xserver = parseInt(x) - parseInt(nodex);
+      var yserver = parseInt(y) - parseInt(nodey);
+
+
+      $("#codeSelect").append(
+        "<option value='" + (parseInt(number) + 1) + "'>" + xserver + "_" + yserver +
+        "</option>");
+      var oDiv = document.createElement('img');
+      oDiv.style.left = (parseInt(x) - 15) + 'px'; // 指定创建的DIV在文档中距离左侧的位置    图片大小30 左右移动5
+      oDiv.style.top = (parseInt(y) - 15) + 'px'; // 指定创建的DIV在文档中距离顶部的位置
+      oDiv.style.border = '1px solid #FF0000'; // 设置边框
+      oDiv.style.position = 'absolute'; // 为新创建的DIV指定绝对定位
+      oDiv.style.width = '30px'; // 指定宽度
+      oDiv.style.height = '30px'; // 指定高度
+      //oDiv.src = 'select.png';
+      oDiv.style.opacity = '0.5'; //透明度
+      oDiv.className = 'zhezhao'; //加class 点刷新后删除遮罩
+      document.body.appendChild(oDiv);
+
+      //第四次点击后自动提交
+      if (number == 4) {
+        cheakOutTree
+          ();
+      }
+
+    });
+
+  })
+
+  //校验验证码
+  function cheakOutTree() {
+    var txt = "";
+    $("#codeSelect option").each(function() {
+      var text = $(this).text();
+      if (txt == "") {
+        txt = text;
+      } else {
+        txt = txt + "," + text;
+      }
+
+    });
+    console.log("验证码是-----------------------------------");
+    console.log(txt);
+    $.ajax({
+      type: "post",
+      url: "http://172.25.210.6:8081/api/verifyCode",
+      data: { "code": txt },
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+        if (data.code == '0') {
+          console.log('验证成功');
+          return;
+
+        } else {
+          console.log('验证失败');
+        }
+        if (!data.result) { getCodeTree(); }
+
+      }
+    });
+  }
+
+  function getNodePosition(node) {
+    var top = left = 0;
+    while (node) {
+      if (node.tagName) {
+        top = top + node.offsetTop;
+        left = left + node.offsetLeft;
+        node = node.offsetParent;
+      } else {
+        node = node.parentNode;
+      }
+    }
+    return [left, top];
+  }
+
+  </script>
+</body>
+
+</html>

@@ -147,11 +147,13 @@
             .club-left{
                 float: left;
                 width: 820px;
+                min-height: 100px;
                 margin-right: 40px;
             }
             .club-right{
                 float: left;
                 width: 340px;
+                min-height: 100px;
                 background: #fafafa;
             }
         }

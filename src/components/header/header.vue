@@ -16,7 +16,7 @@
         </div>
         <div class="right">
           <sign />
-          <router-link to="/myCenter" class="my-center tab not-exact">个人中心</router-link>
+          <router-link v-if="c.isSignIned" to="/myCenter" class="my-center tab not-exact">个人中心</router-link>
         </div>
       </div>
     </div>
@@ -26,11 +26,18 @@
 import PopSign from "../sign/PopSign"
 import SearchBox from "./Search"
 import Sign from "./Sign"
+import data from "data"
 export default {
+  data() {
+    return {
+      c: data
+    }
+  },
   components: {
     PopSign,
     SearchBox,
     Sign
+
   }
 };
 
@@ -46,7 +53,7 @@ $system-color-white: #fff;
   width: 100%;
   min-width: 900px;
   font-size: 15px;
-  z-index: 99;
+  z-index: 11000;
   background: $system-color-black;
   color: $system-color-white;
   .right {

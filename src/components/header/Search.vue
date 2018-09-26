@@ -1,9 +1,27 @@
 <template>
-  <form class="nav-search-wrap">
-    <input id="nav-search-input" placeholder="搜索" type="text">
+  <form class="nav-search-wrap" onsubmit="return false;">
+    <input id="nav-search-input" v-model="s.key" placeholder="搜索" type="text" @keyup.enter="searchpath">
     <router-link to="/search/article"><i class="iconfont ic-search"></i></router-link>
   </form>
 </template>
+<script>
+import search from "../search/searchData"
+export default {
+  data() {
+    return {
+      s: search
+    }
+  },
+  methods: {
+    searchpath() {
+      if (this.s.key) {
+        this.$router.push({ path: '/search/article' + (this.s.key ? '/' + this.s.key : '') });
+      }
+    }
+  }
+}
+
+</script>
 <style lang="scss">
 .nav-search-wrap {
   line-height: 20px;
@@ -32,7 +50,6 @@
       color: #999;
     }
   }
-
   a {
     .iconfont {
       font-size: 17px;
@@ -42,7 +59,3 @@
 }
 
 </style>
-<script>
-
-
-</script>

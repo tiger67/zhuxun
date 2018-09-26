@@ -1,5 +1,5 @@
 <template>
-  <pop-mask v-show="c.showPopSign">
+  <pop-mask v-show="c.showPopSign" v-body-hid>
     <div class="sign-panel">
       <a class="close-btn" href="javascript:void(0);" @click="close">
         <i class="iconfont ic-unfollow"></i>
@@ -32,8 +32,8 @@
 </style>
 <script>
 import PopMask from "./PopMask"
-import SignIn from "./SignIn"
-import SignUp from "./SignUp"
+import SignIn from "./signin/Index"
+import SignUp from "./signup/Index"
 import data from "data"
 export default {
   data() {

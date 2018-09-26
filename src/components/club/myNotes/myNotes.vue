@@ -1,37 +1,31 @@
 <template>
 	<div class="myNotes-wrapper">
-		<div class="head">
-            <div class="avatar">
-                <img src="../../../assets/tou2@2x.png">
-            </div>
-            <p class="name">筑讯小透明</p>
-        </div>
-        <div class="total-bar">
-            共{{note.pageCount}}条笔记
-        </div>
-        <div class="note-list">
-        	<ul class="time-vertical" v-if="len>0">
-		        <li v-for="item in note.pageData" :key="item.noteId">
+		<comHeader :pagenum="pagenum"></comHeader>
+        <div class="note-list" v-if="note.pageCount>0">
+        	<ul class="time-vertical">
+		        <li v-for="(item,index) in note.pageData" :key="item.noteId">
 		        	<b></b>
 		        	<span class="time">{{item.createTime}}</span>
 		        	<p>添加了笔记内容<span>“<a href="javascript:;" @click="openNote(item.note)" class="line-clamp-1">{{item.note}}</a>”</span></p>
 		        	<h1>
 		        		<router-link to="">{{item.title}}</router-link>
 		        	</h1>
+		        	<span class="delete" @click="delNote(index, item.noteId)">删除</span>
 		        </li>
 		    </ul>
-		    <div class="empty-status" else>
-		    	meiy1shu
-		    </div>
         </div>
-        <div class="paginate-wrapper">
+        <div class="com-empty-status" v-if="note.pageCount==0">
+	    	<img src="@/common/img/empty.png">
+	    	<p>暂无收藏</p>
+	    </div>
+        <div class="paginate-wrapper" v-if="note.pageSum>1">
 			<el-pagination
 			  	background
 			  	@size-change="handleSizeChange"
       			@current-change="handleCurrentChange"
 			  	:page-size="1"
 			  	layout="total, prev, pager, next"
-			  	:total="note.pageSum">
+			  	:total="note.pageCount">
 			</el-pagination>
         </div>
         <!-- <div class="notes-layer" v-show="openNotes"  @click="closeNotes">
@@ -46,7 +40,8 @@
 </template>
 
 <script>
-	import {note} from '@/api/request';
+	import {note, delNote} from '@/api/request';
+	import comHeader from '../comHeader';
 
 	export default {
 		data () {
@@ -59,18 +54,19 @@
 		      	note: [],
 		      	startPage: 1,
                 pageSize: 10,
-                len: 0
+                pagenum: ''
 		    }
 		},
 		created() {
             this.getData();
+
         },
 		methods: {
 			async getData(){
                 const params = { startPage: this.startPage, pageSize: this.pageSize };
                 const res = await note(params);
                 this.note = res.data;
-                this.len = this.note.pageData.length;
+                this.pagenum = this.note.pageCount+'条笔记';
             },
             handleSizeChange(val) {
 		        console.log(`每页 ${val} 条`);
@@ -91,12 +87,20 @@
 		          }
 		        });
 		    },
-		    closeNotes() {
-		    	document.body.style.overflow='auto';
-		    	this.openNotes = false;
-		    }
+		    async delNote(i,id){
+                const res = await delNote(id);
+                this.note.pageData.splice(i, 1);
+                this.note.pageCount--;
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
+            }
 
-		}
+		},
+        components: {
+            comHeader
+        }
 	};
 </script>
 
@@ -160,6 +164,7 @@
 			    		}
 			    	}
 			    	p{
+			    		display: inline-block;
 			    		font-size: 14px;
 			    		color: #ccc;
 			    		span{
@@ -171,6 +176,7 @@
 			    			color: #666;
 			    			text-decoration: underline;
 			    			outline: none;
+			    			vertical-align: bottom;
 			    		}
 			    	}
 			    	h1{
@@ -178,6 +184,16 @@
 			    		color: $system-color-black;
 			    		font-weight: bold;
 			    		margin-top: 30px;
+			    	}
+			    	.delete{
+			    		position: absolute;
+			    		right: 0;
+			    		font-size: 14px;
+                        color: #4285F4;
+                        cursor: pointer;
+                        &:hover{
+                            text-decoration: underline;
+                        }
 			    	}
 			    	.time{
 			    		position: absolute;

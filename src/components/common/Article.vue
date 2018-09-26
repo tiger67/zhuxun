@@ -1,36 +1,70 @@
 <template>
-  <div class="atc-unit" :class="{hasimg:showimg }">
+  <div class="atc-unit slide-to-top" :class="{hasimg:showimg || (showimg===undefined && a.thumbnail) }">
     <!-- && article.img -->
     <router-link class="img-wrap" to="/">
       <!-- <img src="@/assets/home/index/c.png"  /> -->
-      <img :src="article.img" />
-      <router-link to="/article-list" class="atc-img-tag">室内设计</router-link>
+      <img :src="a.thumbnail" />
+      <router-link to="/article-list" class="atc-img-tag">{{a.tagName||a.author}}</router-link>
     </router-link>
     <div class="atc-unit-c">
       <div class="atc-unit-c-inner">
-        <router-link to="/article" class="title">{{article.title}}</router-link>
-        <p class="abstract">{{article.abstract}}</p>
+        <router-link :to="`/article/${a.id}`" class="title" v-html="a.title"></router-link>
+        <p class="abstract" v-html="a.introduce"></p>
         <div class="meta">
           <router-link target="_blank" to="/myCenter" class="avatar">
-            <img :src="article.meta.img" alt="">{{article.meta.nickname}}
+            <img :src="a.photoUrl||a.photo" alt="">{{a.userName||a.author}}
           </router-link>
           <a href="javascript:void(0)">
-            <i class='iconfont ic-applying'></i> 一个小时前</a>
+            <i class='spicon' :class="{v1:a.user_type===1,v2:a.user_type===0}"></i> {{a.publishTime | parse}}</a>
           <a href="javascript:void(0)">
-            <i class='iconfont ic-list-read'></i> {{article.meta.looks}}
+            <i class='iconfont ic-list-read'></i> {{a.browseCnt||a.browseLog||0}}
           </a>
-          <a href="javascript:void" @click.prevent="addLove(article)" :class={isloveing:article.isloveing}>
-            <i class='iconfont ic-list-like'></i> {{article.meta.loves}}
+          <a href="javascript:void" @click.prevent="addLove(a)" :class={isloveing:a.isloveing}>
+            <i class='iconfont ic-list-like'></i> {{a.collectCnt||a.collectLog||0}}
           </a>
         </div>
       </div>
     </div>
   </div>
 </template>
+<script>
+import Time from "../common/utils/time"
+export default {
+  props: {
+    a: Object,
+    showimg: Boolean
+  },
+  data() {
+    return {}
+  },
+  filters: {
+    parse: Time.parse
+  },
+  methods: {
+    addLove: function(a) {
+      if (a.isloveing) {
+        return;
+      }
+      let index = articlelist.indexOf(a);
+      let obj = { ...a,
+        isloveing: true
+      };
+      obj.meta.loves = obj.meta.loves + 1;
+      articlelist.splice(index, 1, obj);
+    }
+  },
+  components: {
+
+  }
+}
+
+</script>
 <style lang="scss" scoped>
 $home-color:#333;
+
 .atc-unit.hasimg {
   height: 140px;
+
   .atc-unit-c {
     margin-left: 30.232558139535%
   }
@@ -54,13 +88,20 @@ $home-color:#333;
       display: inline-block;
       border-radius: 4px;
     }
+    &:hover {
+      .atc-img-tag {
+        background-color: rgba(0, 0, 0, .6);
+        color: rgba(255, 255, 255, 1);
+      }
+    }
     .atc-img-tag {
       width: 64px;
       height: 25px;
       /* background: rgba(255, 200, 31, 1); */
       /* background-color: rgba(0, 0, 0, .35); */
-      background-color: rgba(255, 200, 31, .7);
-      color: rgba(255, 255, 255, 1);
+      /* background-color: rgba(255, 200, 31, .7); */
+      background-color: rgba(0, 0, 0, .2);
+      color: rgba(255, 255, 255, .6);
       /* border-radius: 14px; */
       text-align: center;
       line-height: 25px;
@@ -68,9 +109,12 @@ $home-color:#333;
       position: absolute;
       left: 0px;
       top: 0px;
+      transition: background-color, color .75s;
     }
   }
 }
+
+
 
 .atc-unit {
   width: 100%;
@@ -131,6 +175,22 @@ $home-color:#333;
     }
   }
   .meta {
+    .spicon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      position: relative;
+      top: -2px;
+      &.v1 {
+        background: url('~@/common/img/v1.png') center center no-repeat;
+      }
+
+      &.v2 {
+        background: url('~@/common/img/v2.png') center center no-repeat;
+      }
+    }
+
     .isloveing {
       i {
         color: #ffc81f;
@@ -156,33 +216,3 @@ $home-color:#333;
 }
 
 </style>
-<script>
-import articlelist from "../index/article-list-data"
-export default {
-  props: {
-    article: Object,
-    showimg: Boolean,
-  },
-  data() {
-    return {}
-  },
-  methods: {
-    addLove: function(a) {
-      if (a.isloveing) {
-        return;
-      }
-      let index = articlelist.indexOf(a);
-      let obj = { ...a,
-        isloveing: true
-      };
-
-      obj.meta.loves = obj.meta.loves + 1;
-      articlelist.splice(index, 1, obj);
-    }
-  },
-  components: {
-
-  }
-}
-
-</script>

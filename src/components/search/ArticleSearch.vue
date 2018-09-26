@@ -4,7 +4,7 @@
       含“LOFT”的搜索结果约 13
     </div>
     <div class="article-lists">
-      <article-unit v-for="(a,i) in lists.slice(0,10)" :article="a" :showimg="false" :key="i" />
+      <article-unit v-for="(a,i) in lists" :a="a" :showimg="false" :key="a.userId" />
     </div>
   </div>
 </template>
@@ -19,18 +19,34 @@ $home-color:#333;
 
 </style>
 <script>
-import ArticleListData from "../index/article-list-data";
+import API from "@/api"
+import search from "./searchData"
 import ArticleUnit from "../common/Article"
 export default {
   data() {
     return {
-      lists: ArticleListData
+      lists: [],
+      s: search
+    }
+  },
+  mounted() {
+    this.s.key = this.$route.params.key;
+    this.search();
+  },
+  methods: {
+    search() {
+      API["get/api/search/searchArticle"]({ pageCurrent: 1, pageSize: 10, key: this.s.key }).then(res => {
+        console.log(res);
+        if (res.data.code === 0) {
+          //this.lists = res.data.data;
+          this.lists = res.data.data.pageData || [];
+        }
+      })
     }
   },
   components: {
     ArticleUnit
   }
-
 }
 
 </script>

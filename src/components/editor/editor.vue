@@ -7,8 +7,8 @@
                     <div class="btn-bar">
                         <span>文章信息</span>
                         <div class="btn-wrapper">
-                            <div class="fbtn2 write-fbtn2">保存</div>
-                            <div class="fbtn2">发布文章</div>
+                            <div class="fbtn2 write-fbtn2" @click="saveDraft">保存</div>
+                            <div class="fbtn2" @click="release">发布文章</div>
                         </div>
                     </div>
                     <div class="form-bar">
@@ -16,20 +16,20 @@
                             <el-input v-model="title" placeholder="请输入文章标题"></el-input>
                         </div>
                         <div class="form-item">
-                            <el-select v-model="value" placeholder="请选择圈子分类">
+                            <el-select v-model="circleValue" placeholder="请选择圈子分类" @change="circleChange">
                                 <el-option
-                                  v-for="item in optionss"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
+                                  v-for="item in circleOption"
+                                  :key="item.tagId"
+                                  :label="item.tagName"
+                                  :value="item.tagId">
                                 </el-option>
                             </el-select>
-                            <el-select v-model="value" placeholder="请选择标签类型">
+                            <el-select v-model="labelValue" placeholder="请选择标签类型" @change="labelChange">
                                 <el-option
-                                  v-for="item in optionss"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
+                                  v-for="item in labelOption"
+                                  :key="item.tagId"
+                                  :label="item.tagName"
+                                  :value="item.tagId">
                                 </el-option>
                             </el-select>
                         </div>
@@ -51,7 +51,9 @@
 
 <script>
     import header from '@/components/header/header';
-    import Editor from 'wangeditor'
+    import Editor from 'wangeditor';
+    import { getTag, addArticle, redact, singleImageUpload} from '@/api/request';
+    import axios from 'axios';
 
     export default {
         name: 'App',
@@ -62,13 +64,62 @@
                 editorContent: '',
                 editorUpImgUrl: 'http://xxxx',  // 编辑器插入的图片上传地址
                 saving: false,
-                initializeContent: '<p>要初始化的内容</p><p>hahaha</p>'
+                initializeContent: '',
+                circleValue: '',
+                labelValue: '',
+                circleOption: [],
+                labelOption: []
             }
         },
         mounted() {
             this.initEditor()
         },
+        created() {
+            this.getTag();
+
+            let rID = this.$route.params.id;
+            if(rID!=0){
+                this.redactArticle(rID); 
+            }
+             
+        },
         methods: {
+            async getTag() {
+                const res = await getTag();
+                console.log(res.data);
+                this.circleOption = res.data;
+                console.log(this.circleOption);
+            },
+            forTag(id){
+                const array = this.circleOption;
+                let tid = 0;
+                for(let i=0; i<array.length; i++){
+                    for(let j=0; j<array[i].tagRspVos.length; j++){
+                        tid = array[i].tagRspVos[j].tagId;
+                        console.log(tid+'--'+id)
+                        if(tid==id){
+                            console.log(i+'--'+j);
+                            this.circleValue = array[i].tagId;
+                            console.log(this.circleValue);
+                            this.circleChange(this.circleValue);
+                            this.labelValue = id;
+                        }
+                    }
+                    
+                }
+            },
+            circleChange(val) {
+                console.log(val);
+                this.labelValue = '';
+                for( let i=0; i<this.circleOption.length; i++ ){
+                    if(this.circleOption[i].tagId===val){
+                        this.labelOption = this.circleOption[i].tagRspVos;
+                    }
+                } 
+            },
+            labelChange() {
+                console.log(this.labelValue)
+            },
             async initEditor () { 
                 this.editor = new Editor('#toolbar', '#editor'); /* 括号里面的对应的是html里div的id */
                 /* 配置菜单栏 */  
@@ -102,10 +153,10 @@
                     /* files 是 input 中选中的文件列表 */ 
                     let formData = new FormData(); 
                     formData.append('file', files[0]) ;
-                    let data = await this.upload(formData) ;
+                    let res = await singleImageUpload(formData) ;
                     /* upload方法是后台提供的上传图片的接口 */
                     /* insert 是编辑器自带的 获取图片 url 后，插入到编辑器的方法 上传代码返回结果之后，将图片插入到编辑器中*/ 
-                    insert(data.imgUrl);
+                    insert(res.data);
                 } ;
                 this.editor.customConfig.onchange = (html) => {
                   this.editorContent = html
@@ -115,17 +166,84 @@
                 console.log(this.editor);
                 this.editor.$textElem.html(this.initializeContent);  // 初始化内容
             },
-            getContent: function () { // 获取编辑器 内容区内容
-                this.editorContent = this.editor.$textElem.html();
-                console.log(this.editorContent);
-                alert(this.editorContent);
-                this.saving = true;
-                setTimeout(() => {
-                    this.saving = false;
-                },1000)
+            async redactArticle(rID){
+                const params = { 'articleId': rID };
+                const res = await redact(params);
+                console.log(res.data);
+                this.title = res.data.title;
+                this.initializeContent = res.data.content;
+                this.forTag(res.data.tagId);
+                this.editor.$textElem.html(this.initializeContent);  // 初始化内容
+            },
+            async addArticle(params){
+                const res = await addArticle(params);
+                console.log(res);
+                this.articleId = res.data;
+                // this.$message({
+                //     type: 'success',
+                //     message: '保存成功',
+                //     duration: 1000
+                // });
+                this.$router.push('/editor/'+ res.data);
+            },
+            async saveDraft() { 
+                this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
+                
+                const params = {
+                    'articleId': this.$route.params.id, 
+                    'title': this.title, 
+                    'tagId': this.labelValue, 
+                    'content': this.editorContent, 
+                    'type': 0
+                };
+                console.log(params);
+                const res = await addArticle(params);
+                console.log(res);
+                if(this.$route.params.id == 0){  //写文章时id为0，保存后需替换成返回的id
+                    this.$router.push('/editor/'+ res.data);
+                }
+                this.$message({
+                    type: 'success',
+                    message: '保存成功',
+                    duration: 1000
+                });
+                // const headers = {};
+                // const user = sessionStorage.getItem("user");
+                //   headers.AppId = JSON.parse(user)['appId'];
+                //   headers.Authorization = "ticket " + JSON.parse(user)['access_ticket'];
+                //   console.log(headers)
+                // axios.post('http://172.25.210.118:8081/api/pc/article/add', {params:params}, {headers:headers})
+                // .then(function (response) {
+                //   console.log(response);
+                // })
+                // .catch(function (error) {
+                //   console.log(error);
+                // });
+                console.log(params);
                 //this.editorContent = this.editor.$txt.html();  // 获取 html 格式
                 // this.editor.$txt.text();  // 获取纯文本
                 // this.editor.$txt.formatText();  // 获取格式化后的纯文本
+            },
+            async release(){
+                const _this = this;
+                this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
+                const params = {
+                    'articleId': this.$route.params.id, 
+                    'title': this.title, 
+                    'tagId': this.labelValue, 
+                    'content': this.editorContent, 
+                    'type': 2 
+                };
+                const res = await addArticle(params);
+                console.log(res);
+                this.$message({
+                    type: 'success',
+                    message: '发布成功',
+                    duration: 1000,
+                    onClose: function(){
+                        _this.$router.push('/myCenter/myArticles');
+                    }
+                });
             },
             gg() {
                 this.$fetch('/api/v2/movie/top250')
@@ -142,7 +260,9 @@
 
 <style lang="scss">
     $system-color-black: #222;
-
+    .el-select-dropdown{
+        z-index: 12000!important;
+    }
     .editor-wrapper{
         width: 100%;
         height: 100%;

@@ -6,9 +6,9 @@
         </div>
         <div class="content">
             <ul>
-                <li v-for="item in recommendList" :key="item.articleId">
+                <li v-for="item in recommendList.pageData" :key="item.articleId">
                     <h2 class="line-clamp-2">
-                        <router-link to="">{{item.title}}</router-link>
+                        <router-link :to="'/article/'+item.articleId">{{item.title}}</router-link>
                     </h2>
                     <div class="com-name bottom">
                         <img class="avatar" :src="item.photo">
@@ -32,7 +32,8 @@
             return {
                 recommendList: [],
                 startPage: 1,
-                pageSize: 1
+                pageSize: 6,
+                maxPage: 1
             }
         },
         created() {
@@ -43,13 +44,18 @@
                 const params = { startPage: this.startPage, pageSize: this.pageSize };
                 const res = await recommend(params);
                 this.recommendList = res.data;
-                if( res.data.length < 1 ){
-                    this.startPage = 1;
-                }
+                this.maxPage = res.data.pageSum
+                console.log(res.data);
             },
             exchange() {
-                this.startPage++;
-                this.getData();
+                if( this.startPage < this.maxPage ){
+                    this.startPage++;
+                    this.getData();
+                }else{
+                    this.startPage = 1;
+                    this.getData();
+                }
+                
             }
         },
         filters: {

@@ -1,47 +1,47 @@
 <template>
     <div class="messages-wrapper">
-        <div class="messages-item">
-            <h1>站内信</h1>
-            <p class="title">您的文章已通过审核！</p>
-            <div class="text">
-                亲爱的会员:
-你的申请我们已收到，现已成功通过审核，如遇节假日等特殊情况，款项发放时间将有顺延，请知悉。
-具体提现安排，请查看链接：http://help.zhuxuncn.com
-
-如有疑问，请联系设计师专属客服Moko（QQ：3056556257）
-            </div>
-            <span class="time">2018-08-07   20:15:34</span>
+        <div class="messages-item" v-for="item in messagesList.pageData">
+            <h1>{{item.msgType}}</h1>
+            <div class="text" v-html="item.msgContent"></div>
+            <span class="time">{{item.createTime}}</span>
         </div>
-        <div class="messages-item">
-            <h1>站内信</h1>
-            <p class="title">您的文章已通过审核！</p>
-            <div class="text">
-                亲爱的会员:
-你的申请我们已收到，现已成功通过审核，如遇节假日等特殊情况，款项发放时间将有顺延，请知悉。
-具体提现安排，请查看链接：http://help.zhuxuncn.com
-
-如有疑问，请联系设计师专属客服Moko（QQ：3056556257）
-            </div>
-            <span class="time">2018-08-07   20:15:34</span>
+        <div class="com-empty-status" v-if="messagesList.pageCount==0">
+            <img src="@/common/img/empty.png">
+            <p>暂无消息</p>
         </div>
-        <div class="messages-item">
-            <h1>站内信</h1>
-            <p class="title">您的文章已通过审核！</p>
-            <div class="text">
-                亲爱的会员:
-你的申请我们已收到，现已成功通过审核，如遇节假日等特殊情况，款项发放时间将有顺延，请知悉。
-具体提现安排，请查看链接：http://help.zhuxuncn.com
-
-如有疑问，请联系设计师专属客服Moko（QQ：3056556257）
-            </div>
-            <span class="time">2018-08-07   20:15:34</span>
+        <div class="paginate-wrapper" v-if="messagesList.pageSum>1">
+            <el-pagination
+                background
+                @current-change="handleCurrentChange"
+                :page-size="messagesList.pageSize"
+                layout="total, prev, pager, next"
+                :total="messagesList.pageCount">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
+    import {centerSysmsg} from '@/api/request';
 
+    export default {
+        props: {
+            messagesList: Object
+        },
+        data() {
+            return {
+
+            }
+        },
+        created() {
+            
+        },
+        methods: {
+          handleCurrentChange(val) {
+              console.log(`当前页: ${val}`);
+              this.$emit('messagesPage', val);
+          }
+        }
     };
 </script>
 

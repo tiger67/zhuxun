@@ -1,24 +1,48 @@
 <template>
-  <div class="writer-card">
+  <div class="writer-card slide-to-top">
     <div class="writer-card-wrap">
       <router-link to="/myCenter">
-        <div class="avatar-wrap"><img :src="writer.img" alt="" class="avatar"></div>
-        <h4 class="name">
-        {{writer.name}} 
+        <div class="avatar-wrap"><img :src="writer.photo" alt="" class="avatar"></div>
+        <h4 class="name" v-html="writer.nickName">
         <!-- <i  class="iconfont" :class="{'ic-man':writer.gender=='man','ic-woman':writer.gender=='woman'}"></i>  -->
         </h4>
       </router-link>
-      <p>{{writer.description}}</p>
-      <a v-if="!writer.followed" class="btn follow-btn" @click.prevent="$emit('follow', writer, true)">
+      <p>{{writer.instroduce}}</p>
+      <!-- @click.prevent="$emit('follow', writer, true)" -->
+      <a v-show="!c.isSignIned || !followed" class="btn follow-btn" v-addfollow="{w:writer,follow}">
         <span class="btn-inner"><i class="iconfont ic-follow"></i> 关注</span>
       </a>
-      <a v-else="writer.followed" class="btn cancel-btn" @click.prevent="$emit('follow', writer, false)">
+      <!--  @click.prevent="$emit('follow', writer, false)" -->
+      <a v-show="c.isSignIned && followed" class="btn cancel-btn">
         <span class="btn-inner"><i class="iconfont ic-followed"></i>已关注</span>
-        <span class="btn-inner-hover"><i class="iconfont ic-unfollow"></i>取消关注</span>
+       <!--  <span class="btn-inner-hover"><i class="iconfont ic-unfollow"></i>取消关注</span> -->
       </a>
     </div>
   </div>
 </template>
+<script>
+import c from "data"
+export default {
+  props: {
+    writer: Object,
+  },
+  data() {
+    return {
+      followed: false,
+      c
+    }
+  },
+  mounted: function() {
+
+  },
+  methods: {
+    follow: function(flag) {
+      this.followed = true;
+    }
+  }
+}
+
+</script>
 <style lang="scss">
 .writer-card {
   float: left;
@@ -105,30 +129,16 @@
       .btn-inner-hover {
         display: none;
       }
-      &:hover {
-        .btn-inner {
-          display: none;
-        }
-        .btn-inner-hover {
-          display: inline;
-        }
-      }
+      /*  &:hover {
+       .btn-inner {
+         display: none;
+       }
+       .btn-inner-hover {
+         display: inline;
+       }
+     } */
     }
   }
 }
 
 </style>
-<script>
-export default {
-  props: {
-    writer: Object,
-  },
-  data() {
-    return {}
-  },
-  methods: {
-
-  }
-}
-
-</script>

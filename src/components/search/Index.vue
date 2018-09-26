@@ -3,22 +3,25 @@
     <div class="s-wrap">
       <div class="w m0a">
         <form class="search-form">
-          <input type="text" class="search-box">
+          <input type="text" class="search-box" v-model="s.key" @keyup.enter="searchpath">
+          <input type="text" style="display:none">
           <i class="iconfont ic-search"></i>
         </form>
       </div>
     </div>
     <div class="search-content clear">
       <div class="sc-left w-s">
-        <router-link to="/search/article" class="toggle-s-btn"><i class="iconfont ic-articles"></i>文章</router-link>
-        <router-link to="/search/writer" class="toggle-s-btn"><i class="iconfont ic-search-user"></i>用户</router-link>
+        <router-link :to="`/search/article${s.key ? '/'+s.key : ''}`" class="toggle-s-btn"><i class="iconfont ic-articles"></i>文章</router-link>
+        <router-link :to="`/search/writer${s.key ? '/'+s.key : ''}`" class="toggle-s-btn"><i class="iconfont ic-search-user"></i>用户</router-link>
         <div class="s-hr"></div>
         <div>
           <div class="hot-s-title"><span>热门搜索 </span>
-            <a href="javascript:void(0);"><i class="iconfont ic-search-change"></i>换一批</a>
+            <!--  <a href="javascript:void(0);"><i class="iconfont ic-search-change"></i>换一批</a> -->
           </div>
           <ul class="hot-search">
-            <tag v-for="(t,i) in taglists" :name="t.name" :url="t.url" :key="i" />
+            <tag v-for="(tag,i) in taglists" :key="i">
+              <a href="javascript:void(0);">{{tag}}</a>
+            </tag>
           </ul>
         </div>
       </div>
@@ -29,19 +32,32 @@
   </div>
 </template>
 <script>
-import Tag from "../common/Tag"
+import Tag from "@/components/common/Tag"
+import search from "./searchData"
+import API from "@/api"
+
 export default {
   data() {
     return {
-      taglists: [
-        { name: "证书", url: "/" },
-        { name: "区块链", url: "/" },
-        { name: "一个会所", url: "/" },
-        { name: "二级建造师培训", url: "/" },
-        { name: "毕业", url: "/" },
-        { name: "理财", url: "/" },
-        { name: "o2o", url: "/" }
-      ]
+      taglists: [],
+      s: search
+    }
+  },
+  mounted() {
+    this.s.key = this.$route.params.key;
+    this.searchKeyword();
+  },
+  methods: {
+    searchpath() {
+      if (this.s.key) {
+        this.$router.push({ path: '/search/article' + this.s.key ? '/' + this.s.key : '' });
+      }
+    },
+    searchKeyword() {
+      API["get/api/tag/searchKeyword"]().then(res => {
+        //console.log(res);
+        this.taglists = res.data.data;
+      })
     }
   },
   components: {
@@ -54,6 +70,21 @@ export default {
 .search-page {
   * {
     box-sizing: border-box;
+  }
+  .tag {
+    float: left;
+    padding: 8px 12px;
+    background-color: #eee;
+    margin: 10px;
+    border-radius: 4px;
+
+    a {
+      color: #343434;
+    }
+    &:hover {
+      /* box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.1); */
+      box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.2);
+    }
   }
   .clear {
     &:after,

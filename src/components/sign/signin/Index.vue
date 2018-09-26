@@ -1,0 +1,118 @@
+<template>
+  <div class="sign-form sign-in">
+    <h2 class="title">登录</h2>
+    <form>
+      <div class="input-box">
+        <!-- v-mobile-vertify="" -->
+        <input type="text" placeholder="手机号" v-model.trim.lazy.number="mobile">
+        <input type="text" name="name" hidden>
+        <i class="iconfont ic-phonenumber"></i>
+      </div>
+      <password-input>
+        <input type="password" placeholder="设置密码" v-model.trim="password">
+      </password-input>
+      <div class="remember">
+        <input type="checkbox" name="remember_me" id="remember_me">
+        <label for="remember_me">下次自动登录</label>
+      </div>
+      <a href="javascript:void(0);" @click.prevent="forgetPassword" class="forget-password">忘记密码</a>
+      <div class="submit-box">
+        <button @click.prevent="submit">
+          <loading v-show="issubmiting" />登录
+        </button>
+      </div>
+    </form>
+    <signin-footer>
+      <div class="other-link" v-show="!$slots.default">
+        还没有账号？
+        <router-link to="/sign_up">立即注册</router-link>
+      </div>
+      <slot />
+    </signin-footer>
+    <div class='sign-error-wrap' v-show="error">
+      <div class="sign-error"> {{error}}</div>
+    </div>
+    <error></error>
+  </div>
+</template>
+<script>
+var md5 = require('../comp/md5').md5;
+import SigninFooter from "./Footer"
+import MobileInput from "../comp/MobileInput"
+import PasswordInput from "../comp/PasswordInput"
+import localdata from "./data";
+import Loading from "../Loading"
+import directives from "./directives"
+import API from "@/api"
+import sign from "../common"
+import Error from "../comp/error"
+export default {
+  data() {
+    return {
+      ...localdata
+    }
+  },
+  components: {
+    Loading,
+    SigninFooter,
+    MobileInput,
+    PasswordInput,
+    Error
+  },
+  directives,
+  methods: {
+    pushError(msg) {
+      this.error = msg;
+      this.issubmiting = false;
+      setTimeout(() => {
+        this.error = "";
+      }, 5000);
+    },
+    clearAfterSigninRun: function() {
+      this.c.afterSigninRun = null;
+      //console.log("this.c.afterSigninRun已经清空");
+    },
+    submit: function() {
+      if (!this.mobile || !this.password) {
+        this.pushError("手机号和密码不能为空");
+        return;
+      }
+      this.issubmiting = true;
+      API["post/api/u/login"]({
+        password: md5(this.password),
+        mobile: this.mobile,
+      }).then((res, error) => {
+        if (res.data.code === 0) {
+          //API.token = res.data.data;
+          setTimeout(() => {
+            this.c.isSignIned = true;
+            this.issubmiting = false;
+            this.c.u = { ...this.c.u, ...res.data.data };
+            //sessionStorage.setItem("user", JSON.stringify(res.data.data));
+            sign.setUser(res.data.data)
+
+            if (this.$route.name == "SignIn") {
+              this.$router.push('/');
+            } else {
+              this.c.showPopSign = false;
+              this.c.afterSigninRun && this.c.afterSigninRun(this.clearAfterSigninRun);
+            }
+          }, 1000);
+        } else {
+          this.issubmiting = false;
+          this.pushError(res.data.msg);
+        }
+      })
+    },
+    forgetPassword: function() {
+      this.c.showPopSign = false;
+      this.$router.push("/forget_password");
+    }
+  }
+}
+
+</script>
+<style lang="scss">
+@import "./Index.scss"
+
+</style>

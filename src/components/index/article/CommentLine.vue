@@ -1,93 +1,107 @@
 <template>
   <div class='cmt-line'>
     <div class="author">
-      <router-link to="/myCenter" class="avatar"><img :src="cmt.author.avatar" alt=""></router-link>
+      <router-link to="/myCenter" class="avatar"><img :src="cmt.commentUserPhotoUrl" alt=""></router-link>
       <div class="info">
-        <router-link to="/myCenter" class="name">{{cmt.author.name}}</router-link>
-        <div class="meta">楼 · {{cmt.createTime}}</div>
+        <router-link to="/myCenter" class="name">{{cmt.commentUserName||"textname"}}</router-link>
+        <div class="meta">{{mindex+1}}楼 · {{cmt.createTime|TimeYMDhms}}</div>
       </div>
+    </div>
+    <div class="peer-info" v-if="cmt.peerUserId">
+      <span>
+      <span style="color:#888;font-size:12px;">引用</span>
+      <router-link to="/">@{{cmt.peerUserName}}</router-link>
+      <span style="color:#888;font-size:12px;">发表的</span>：{{cmt.peerContent}}</span>
     </div>
     <p class="cmt-content">
-      {{cmt.content}}
+      {{cmt.commentContent||cmt.content}}
     </p>
     <div class="tool-group">
-      <a href="javascript:void(0);" class="cmt-tool-zang">
-        赞
+      <a href="javascript:void(0);" class="cmt-tool-zang" :class="{'zan-animation':zan,'active':cmt.isZan}" v-signin="{path:()=>{addzan(cmt)}}">
+        {{cmt.zanNum > 0 ? cmt.zanNum+"人" : ""}}赞
       </a>
-      <a href="javascript:void(0);">
+      <a href="javascript:void(0);" v-signin="{path:function(){toggleReply(true)}}">
         <i class="iconfont ic-comment"></i>
         回复
       </a>
     </div>
-    <div class="sub-cmt-list" v-show="cmt.subcomments.length>0">
-      <div class="sub-cmt-line" v-for="sub in cmt.subcomments">
-        <div class="sub-cmt-l-u">
-          <router-link :to="sub.from.url">
-            {{sub.from.name}}
-          </router-link>：
-          <router-link to="/">
-            @{{sub.to.name}}
-          </router-link>
-          <span>{{sub.content}}</span>
-        </div>
-        <div class="sub-tool-group">
-          <span>{{sub.createTime}}</span>
-          <a href="javascript:void(0);">
-        <i class="iconfont ic-comment"></i>
-        回复
-      </a>
-        </div>
-      </div>
-      <div class="sub-cmt-more">
-        <a class='add-sub-cmt-btn' href="javascript:void(0);">
-          <i class="iconfont ic-subcomment"></i>添加评论
-        </a>
-      </div>
+    <div v-if="openFlag " class="reply-wrap">
+      <comment-reply :type="1" :commentId="cmt.id" @toggleReply="toggleReply">
+      </comment-reply>
     </div>
+    {{changeOpenFlag}}
   </div>
 </template>
+<script>
+import api from "./api"
+import c from 'data'
+import commentReply from "./ArticleReply"
+import data from "./data"
+export default {
+  props: {
+    cmt: Object,
+    mindex: Number,
+  },
+  data() {
+    return {
+      openFlag: false,
+      zan: false,
+      author: data.author
+    }
+  },
+  components: {
+    commentReply
+  },
+  computed: {
+    changeOpenFlag() {
+      if (c.isSignIned) {
+        this.openFlag = false;
+      } else {
+        this.openFlag = false;
+      }
+    }
+  },
+  methods: {
+    toggleReply(flag) {
+      this.openFlag = flag;
+    },
+    addzan(cmt) {
+      //console.log(cmt);
+      api.zan(cmt.id, () => {
+        this.zan = true;
+      })
+    }
+  }
+}
+
+</script>
 <style lang="scss">
+@keyframes likeBlast-data-v-cdecbe24 {
+  0% {
+    background-position: -50px;
+  }
+  100% {
+    background-position: right;
+  }
+}
+
 .cmt-line {
   padding: 20px 0 30px 0;
   border-top: 1px solid #f0f0f0;
-  .sub-cmt-list {
-    margin-top: 20px;
-    padding: 5px 0 5px 20px;
-    border-left: 2px solid #d9d9d9;
-    .sub-cmt-more {
-      .add-sub-cmt-btn {
-        color: #969696;
-        &:hover {
-          color: #333;
-        }
-      }
-      i {
-        margin-right: 8px;
-      }
-    }
-    .sub-cmt-line {
-      margin-bottom: 15px;
-      padding-bottom: 15px;
-      border-bottom: 1px dashed #f0f0f0;
-      .sub-cmt-l-u {
-        a {
-          color: #3194d0;
-        }
-      }
-      .sub-tool-group {
-        font-size: 12px;
-        color: #969696;
-        margin-top: 10px;
-        a {
-          margin-left: 10px;
-          color: #969696;
-          i {
-            margin-right: 5px;
-            font-size: 14px;
-            vertical-align: middle;
-          }
-        }
-      }
+  .reply-wrap {
+    padding-top: 10px;
+  }
+  .peer-info {
+    /*  padding: 5px 5px 5px 5px; */
+    padding: 12px;
+    margin: 10px 0 0px;
+    font-size: 14px;
+    display: inline-block;
+    /* border-left: 2px solid #888; */
+    background-color: rgba(181, 181, 181, 0.1);
+
+    a {
+      color: #3194d0
     }
   }
   .tool-group {
@@ -109,6 +123,13 @@
       }
       &:hover:before {
         background-position: -50px;
+      }
+      &.active:before {
+        background-position: right;
+      }
+      &.zan-animation:before {
+        animation: likeBlast-data-v-cdecbe24 0.6s 1 steps(19);
+        background-position: right;
       }
     }
     a {
@@ -168,15 +189,3 @@
 }
 
 </style>
-<script>
-export default {
-  props: {
-    cmt: Object
-  },
-  data() {
-    return {}
-  }
-
-}
-
-</script>

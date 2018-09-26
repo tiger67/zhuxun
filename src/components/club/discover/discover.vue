@@ -4,15 +4,15 @@
             <div class="head-bar">
                 <i class="icon-title1"></i><h1>新增会员</h1><i class="icon-title2"></i>
                 <span class="all">
-                    <router-link to="">全部<i class="icon-more"></i></router-link>
+                    <router-link to="/allNew/0">全部<i class="icon-more"></i></router-link>
                 </span>
             </div>
             <div class="card-content clearfix">
-                <div class="card-item" v-for="item in vipList.slice(0, 3)" :key="item.userId">
+                <div class="card-item" v-for="(item,index) in vipList" :key="item.userId">
                     <div class="com-avatar">
-                        <img :src="item.photo">
+                        <router-link target="_blank" :to="{path: '/visitor/' + item.userId}"><img :src="item.photo"></router-link>
                     </div>
-                    <div class="com-name">
+                    <div class="com-name line-clamp-1">
                         <span>{{item.nickName}}</span>
                         <i class="v1" v-if="item.auth_status===1"></i>
                     </div>
@@ -20,7 +20,8 @@
                         {{item.introduce}}
                     </div>
                     <div class="btn-box">
-                        <div class="fbtn1 m-follow-btn">+ 关注</div>
+                        <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="attention(index, item.userId)">+ 关注</div>
+                        <div class="fbtn1 followed-btn" v-if="!item.activeName">已关注</div>
                     </div>   
                 </div>
             </div>
@@ -29,7 +30,7 @@
             <div class="head-bar">
                 <i class="icon-title1"></i><h1>新增机构</h1><i class="icon-title2"></i>
                 <span class="all">
-                    <router-link to="">全部<i class="icon-more"></i></router-link>
+                    <router-link to="/allNew/1">全部<i class="icon-more"></i></router-link>
                 </span>
             </div>
             <div class="card-content clearfix">
@@ -76,7 +77,7 @@
 
 <script>
     import label from '@/components/label/label';
-    import { vipOrganList, industry } from '@/api/request';
+    import { vipOrganList, industry, reAttention } from '@/api/request';
 
 	export default {
         data() {
@@ -96,11 +97,23 @@
                 console.log(res);
                 this.vipList = res.data.vipList;
                 this.OrganList = res.data.OrganList;
+
+                this.vipList.forEach(item => {
+                    this.$set(item, 'activeName', true)
+                });
             },
             async getIndustry(){
                 const res = await industry();
                 console.log(res);
                 this.industry = res.data;
+            },
+            async attention(i,id){
+                const res = await reAttention(id);
+                this.vipList[i].activeName = !this.vipList[i].activeName;
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
             }
         },
         components: {
@@ -170,12 +183,18 @@
                     position: relative;
                     margin-top: 75px;
                     font-size: 0;
+                    padding: 0 25px;
+                    span{
+                        display: inline-block;
+                        line-height: 20px;
+                    }
                 }
                 .intro{
                     font-size: 14px;
                     color: #999;
                     line-height: 24px;
                     margin: 16px 34px 25px 34px;
+                    height: 70px;
                 }
                 .btn-box{
                     

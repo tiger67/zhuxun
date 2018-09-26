@@ -18,8 +18,7 @@
       </li>
       <li>
         <router-link to="/article" v-tooltip="'分享文章'">
-          <i class="iconfont ic-share">              
-            </i>
+          <i class="iconfont ic-share"></i>
         </router-link>
       </li>
     </ul>

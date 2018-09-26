@@ -27,7 +27,7 @@
             async getArticle(){
             	const params = { startPage: this.startPage, pageSize: this.pageSize};
                 const res = await newestArticle(params);
-
+                console.log(res.data);
                 this.ArticleList = this.ArticleList.concat(res.data);
                 if( res.data.length < this.pageSize ){
                 	this.isloadMore = false;

@@ -16,18 +16,12 @@
 <script>
 export default {
   data() {
-    return {
-      issign: true,
-      nickname: "",
-      password: "",
-      telephone: ''
-    }
+    return {}
   },
   methods: {
     togglesign: function() {
       this.issign = !this.issign;
-    },
-    submit: function() {}
+    }
   }
 }
 

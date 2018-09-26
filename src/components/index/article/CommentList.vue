@@ -1,17 +1,57 @@
 <template>
   <div class="comments-list-w">
     <div class="hd-title">
-      <span>56条评论</span>
+      <span ref="init">{{d.commentSum}}条评论</span>
       <div class="hd-title-r">
-        <a href="javascript:void">按照时间倒序</a>
-        <a href="javascript:void">按照时间正序</a>
+        <a href="javascript:void(0);" ref="getdataA" @click="putsort(0)" :class="{active:sort==0}">按照时间倒序</a>
+        <a href="javascript:void(0);" ref="getdataB" @click="putsort(1)" :class="{active:sort==1}">按照时间正序</a>
       </div>
     </div>
-    <div class="comments-list-content">
-      <comment-line v-for="(cmt,i) in lists" :key="i" :cmt="cmt" />
-    </div>
+    <paging class="comments-list-content" @getDataList="getdata" :pageSize="3">
+      <comment-line v-for="(cmt,i) in comments" :key="cmt.id" :cmt="cmt" :mindex="i" />
+    </paging>
   </div>
 </template>
+<script>
+import Paging from "@/components/common/Paging"
+import CommentLine from "./CommentLine"
+import api from "./api"
+import data from "./data"
+export default {
+  props: {
+    comments: Array,
+  },
+  data() {
+    return {
+      sort: data.sort,
+      d: data,
+    }
+  },
+  components: {
+    CommentLine,
+    Paging
+  },
+  mounted() {
+    var id = this.$route.params.id
+    api.commentsum(id);
+  },
+  methods: {
+    getdata({ startPage, pageSize }, cb) {
+      api.getcomments({ id: this.$route.params.id, cb, startPage, pageSize });
+    },
+    putsort(s) {
+      if (data.sort == s) {
+        return;
+      }
+      this.sort = s;
+      data.sort = this.sort;
+      this.$paging.init();
+      //api.getcomments();
+    }
+  }
+}
+
+</script>
 <style lang="scss">
 .comments-list-w {
   margin-top: 40px;
@@ -34,28 +74,14 @@
         margin-left: 10px;
         font-size: 12px;
         font-weight: 400;
-        color: #666;
+        color: #969696;
         display: inline-block;
+        &.active {
+          color: #222;
+        }
       }
     }
   }
 }
 
 </style>
-<script>
-import localdata from "./data"
-import CommentLine from "./CommentLine"
-
-export default {
-  props: {},
-  components: {
-    CommentLine
-  },
-  data() {
-    return {
-      lists: localdata.comments
-    }
-  }
-}
-
-</script>

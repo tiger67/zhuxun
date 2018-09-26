@@ -2,40 +2,47 @@
   <div class="comment-panel-wrap">
     <div class="post-comment-control">
       <div class="signin-wrap" v-if="!c.isSignIned">
-        <a href="javascript:void" @click.prevent="toggleSign(true)" class="btn signin-btn">登录</a>
+        <a href="javascript:void(0)" v-signin class="btn signin-btn">登录</a>
         <span>后发表评论</span>
       </div>
-      <comment-box v-else>
-        <router-link to="/article" class="avatar"> <img :src="author.avatar" alt="">
+      <article-reply v-else :atc="atc">
+        <router-link to="/article" class="avatar"> <img :src="atc.photo || atc.avatar" alt="">
         </router-link>
-      </comment-box>
+      </article-reply>
     </div>
-    <comment-list />
+    <comment-list :comments="comments" />
   </div>
 </template>
 <script>
-import data from "data"
+import c from "data"
 import CommentList from "./CommentList"
-import CommentBox from "./CommentBox"
-
+import ArticleReply from "./ArticleReply"
+import api from "./api"
+import data from "./data"
 export default {
   props: {
-    comments: Array,
-    author: Object
+    atc: Object
   },
   data() {
     return {
-      c: data,
+      c,
+      comments: data.comments,
+    }
+  },
+  mounted() {
+    //this.commentslist();
+    var id = this.$route.params.id
+    api.getcomments(id)
+
+  },
+  methods: {
+    commentslist() {
+
     }
   },
   components: {
     CommentList,
-    CommentBox
-  },
-  methods: {
-    toggleSign: function(flag) {
-      this.c.showPopSign = flag
-    }
+    ArticleReply
   }
 }
 

@@ -5,15 +5,12 @@
   </div>
 </template>
 <script>
-import c from "./data-content"
 export default {
   props: {
     atc: Object
   },
   data() {
-    return {
-
-    }
+    return {}
   }
 }
 
@@ -26,8 +23,6 @@ export default {
     box-sizing: border-box;
   }
   color: #2f2f2f;
-  word-break: break-word!important;
-  word-break: break-all;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.7;
@@ -35,16 +30,19 @@ export default {
     margin: 0 0 25px;
     word-break: break-word!important;
   }
-
+  .watermark {
+    display: block;
+    max-width: 100%;
+    margin: 0px auto;
+  }
   .image-package {
     padding-bottom: 25px;
-    width: 700px;
     margin: 10px auto;
     text-align: center;
     img {
       max-width: 100%;
       height: auto;
-
+      margin: 0 auto;
       vertical-align: middle;
       border: 0;
       cursor: -webkit-zoom-in;
