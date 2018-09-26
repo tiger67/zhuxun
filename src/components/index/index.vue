@@ -17,49 +17,51 @@
 </template>
 <style lang="scss">
 .home {
-  * {
-    box-sizing: border-box;
-  }
-
-  .split-line {
-    margin: -5px 0 15px;
-    border-top: 1px solid #f0f0f0;
-  }
-
-  .left-m {
-    float: left;
-    /* width: 66.66667%; */
-    /*  width: 860px; */
-    width: 71.666666666667%;
-    /*  border: 1px solid #ccc; */
-    padding-top: 30px;
-    /*  padding-left: 15px; */
-  }
-
-  .right-m {
-    float: right;
-    /*  margin-left: 4.16667%; */
-    /* width: 29.16667%; */
-    /*  width: 300px; */
-    width: 25%;
-    padding: 30px 0 0;
-  }
-
-  .home-title {
-    font-size: 18px;
-    font-weight: bold;
-    padding-left: 10px;
-    font-weight: 600;
-    color: #333;
-    line-height: 20px;
-    border-left: 6px solid rgba(255, 200, 31, 1);
-    margin-bottom: 20px;
-    a {
-      float: right;
-      font-size: 14px;
-      color: #666;
+    * {
+        box-sizing: border-box;
     }
-  }
+
+    .split-line {
+        margin: -5px 0 15px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .left-m {
+        float: left;
+        /*  */
+        width: 66.66667%;
+        /*  width: 860px; */
+        /* width: 71.666666666667%; */
+        /*  border: 1px solid #ccc; */
+        padding-top: 30px;
+        /*  padding-left: 15px; */
+    }
+
+    .right-m {
+        float: right;
+        /*  margin-left: 4.16667%; */
+        /*  */
+        width: 29.16667%;
+        /*  width: 300px; */
+        /*  width: 25%; */
+        padding: 30px 0 0;
+    }
+
+    .home-title {
+        font-size: 18px;
+        font-weight: bold;
+        padding-left: 10px;
+        font-weight: 600;
+        color: #333;
+        line-height: 20px;
+        border-left: 6px solid rgba(255, 200, 31, 1);
+        margin-bottom: 20px;
+        a {
+            float: right;
+            font-size: 14px;
+            color: #666;
+        }
+    }
 }
 
 </style>
