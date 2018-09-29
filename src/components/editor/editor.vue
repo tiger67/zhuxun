@@ -7,13 +7,15 @@
                     <div class="btn-bar">
                         <span>文章信息</span>
                         <div class="btn-wrapper">
-                            <div class="fbtn2 write-fbtn2" @click="saveDraft">保存</div>
+                            <div class="fbtn2 write-fbtn2" @click="saveDraft" v-show="!saving">保存</div>
+                            <div class="fbtn2 write-fbtn2"  v-show="saving">保存中...</div>
                             <div class="fbtn2" @click="release">发布文章</div>
                         </div>
                     </div>
                     <div class="form-bar">
-                        <div class="form-item">
-                            <el-input v-model="title" placeholder="请输入文章标题"></el-input>
+                        <div class="form-item" :class="{'is-error': isError}">
+                            <el-input v-model="title" placeholder="请输入文章标题" @blur="checktitle" autofocus="true"></el-input>
+                            <span class="msg">{{msgtitle}}</span>
                         </div>
                         <div class="form-item">
                             <el-select v-model="circleValue" placeholder="请选择圈子分类" @change="circleChange">
@@ -32,6 +34,7 @@
                                   :value="item.tagId">
                                 </el-option>
                             </el-select>
+                            <span class="msg">{{msgtag}}</span>
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,6 @@
     import header from '@/components/header/header';
     import Editor from 'wangeditor';
     import { getTag, addArticle, redact, singleImageUpload} from '@/api/request';
-    import axios from 'axios';
 
     export default {
         name: 'App',
@@ -68,7 +70,11 @@
                 circleValue: '',
                 labelValue: '',
                 circleOption: [],
-                labelOption: []
+                labelOption: [],
+                msgtitle:'',
+                msgtag: '',
+                isError: false,
+                saving: false
             }
         },
         mounted() {
@@ -96,11 +102,11 @@
                 for(let i=0; i<array.length; i++){
                     for(let j=0; j<array[i].tagRspVos.length; j++){
                         tid = array[i].tagRspVos[j].tagId;
-                        console.log(tid+'--'+id)
+                        //console.log(tid+'--'+id)
                         if(tid==id){
-                            console.log(i+'--'+j);
+                            //console.log(i+'--'+j);
                             this.circleValue = array[i].tagId;
-                            console.log(this.circleValue);
+                            //console.log(this.circleValue);
                             this.circleChange(this.circleValue);
                             this.labelValue = id;
                         }
@@ -118,7 +124,29 @@
                 } 
             },
             labelChange() {
-                console.log(this.labelValue)
+                console.log(this.labelValue);
+                this.checkTag();
+            },
+            checktitle() {
+                var reg = /^[0-9a-zA-Z_\u4e00-\u9fa5\, \.\，\。\《\》\[\]\!\@\# \$\%\^\(\)\+\-\#\￥\&\—\、]+$/;
+                if(!reg.test(this.title)){
+                    this.msgtitle = "请正确填写标题";
+                    this.isError = true;
+                    return false;
+                }else{
+                    this.msgtitle = "";
+                    this.isError = false;
+                    return true;
+                }
+            },
+            checkTag() {
+                if(!this.circleValue||!this.labelValue){
+                    this.msgtag = "请选择标签";
+                    return false;
+                }else{
+                    this.msgtag = "";
+                    return true;
+                }
             },
             async initEditor () { 
                 this.editor = new Editor('#toolbar', '#editor'); /* 括号里面的对应的是html里div的id */
@@ -142,7 +170,7 @@
                     'table',  // 表格
                     'code',  // 插入代码
                     'undo',  // 撤销
-                    'redo'  // 重复
+                    //'redo'  // 重复
                 ] ;   
                 this.editor.customConfig.uploadImgMaxLength = 5; /* 限制一次最多上传 5 张图片 */ 
                 this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024; /* 将图片大小限制为 3M 默认为5M */ 
@@ -153,13 +181,14 @@
                     /* files 是 input 中选中的文件列表 */ 
                     let formData = new FormData(); 
                     formData.append('file', files[0]) ;
-                    let res = await singleImageUpload(formData) ;
-                    /* upload方法是后台提供的上传图片的接口 */
+                    let res = await singleImageUpload(formData) ; /* 后台提供的上传图片的接口 */
                     /* insert 是编辑器自带的 获取图片 url 后，插入到编辑器的方法 上传代码返回结果之后，将图片插入到编辑器中*/ 
                     insert(res.data);
                 } ;
                 this.editor.customConfig.onchange = (html) => {
-                  this.editorContent = html
+                  this.editorContent = html;
+                  console.log('html')
+                  this.saveDraft();
                     /* html 即变化之后的内容 */ 
                 } ;
                 this.editor.create(); /* 创建编辑器 */ 
@@ -188,62 +217,72 @@
             },
             async saveDraft() { 
                 this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
-                
-                const params = {
-                    'articleId': this.$route.params.id, 
-                    'title': this.title, 
-                    'tagId': this.labelValue, 
-                    'content': this.editorContent, 
-                    'type': 0
-                };
-                console.log(params);
-                const res = await addArticle(params);
-                console.log(res);
-                if(this.$route.params.id == 0){  //写文章时id为0，保存后需替换成返回的id
-                    this.$router.push('/editor/'+ res.data);
+                if( this.checktitle() && this.checkTag() ){
+                    if(this.editor.$textElem.text()==''){
+                        this.$message({
+                            type: 'error',
+                            message: '文章内容不能为空',
+                            duration: 1000
+                        });
+                        return false;
+                    }
+                    const params = {
+                        'articleId': this.$route.params.id, 
+                        'title': this.title, 
+                        'tagId': this.labelValue, 
+                        'content': this.editorContent, 
+                        'type': 0
+                    };
+                    console.log(params);
+                    //this.saving = true;console.log(this.saving )
+                    const res = await addArticle(params);
+                    console.log(res);
+                    if(this.$route.params.id == 0){  //写文章时id为0，保存后需替换成返回的id
+                        this.$router.push('/editor/'+ res.data);
+                    }
+                    this.$message({
+                        type: 'success',
+                        message: '保存成功',
+                        duration: 1000
+                    });
+                    //setTimeout(function(){ this.saving = false; console.log(this.saving ) },500);
                 }
-                this.$message({
-                    type: 'success',
-                    message: '保存成功',
-                    duration: 1000
-                });
-                // const headers = {};
-                // const user = sessionStorage.getItem("user");
-                //   headers.AppId = JSON.parse(user)['appId'];
-                //   headers.Authorization = "ticket " + JSON.parse(user)['access_ticket'];
-                //   console.log(headers)
-                // axios.post('http://172.25.210.118:8081/api/pc/article/add', {params:params}, {headers:headers})
-                // .then(function (response) {
-                //   console.log(response);
-                // })
-                // .catch(function (error) {
-                //   console.log(error);
-                // });
-                console.log(params);
+                
                 //this.editorContent = this.editor.$txt.html();  // 获取 html 格式
                 // this.editor.$txt.text();  // 获取纯文本
                 // this.editor.$txt.formatText();  // 获取格式化后的纯文本
             },
             async release(){
-                const _this = this;
                 this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
-                const params = {
-                    'articleId': this.$route.params.id, 
-                    'title': this.title, 
-                    'tagId': this.labelValue, 
-                    'content': this.editorContent, 
-                    'type': 2 
-                };
-                const res = await addArticle(params);
-                console.log(res);
-                this.$message({
-                    type: 'success',
-                    message: '发布成功',
-                    duration: 1000,
-                    onClose: function(){
-                        _this.$router.push('/myCenter/myArticles');
+                if( this.checktitle() && this.checkTag() ){console.log(this.editorContent)
+                    if(this.editor.$textElem.text()==''){
+                        this.$message({
+                            type: 'error',
+                            message: '文章内容不能为空',
+                            duration: 1000
+                        });
+                        return false;
                     }
-                });
+                    const _this = this;
+                    const params = {
+                        'articleId': this.$route.params.id, 
+                        'title': this.title, 
+                        'tagId': this.labelValue, 
+                        'content': this.editorContent, 
+                        'type': 2 
+                    };
+                    console.log(params);
+                    const res = await addArticle(params);
+                    console.log(res);
+                    this.$message({
+                        type: 'success',
+                        message: '发布成功',
+                        duration: 1000,
+                        onClose: function(){
+                            _this.$router.push('/myCenter/myArticles');
+                        }
+                    });
+                }
             },
             gg() {
                 this.$fetch('/api/v2/movie/top250')
@@ -326,6 +365,18 @@
                             border-radius: 50%;
                             background: #F4523B;
                         }
+                        .msg{
+                            display: inline-block;
+                            margin-left: 15px;
+                            font-size: 14px;
+                            color: #f4523b;
+                        }
+                        &.is-error{
+                            .el-input__inner{
+                                border-color: #f4523b;
+                                background: #fff;
+                            }
+                        }
                     }
                 }
             }
@@ -353,6 +404,10 @@
                         overflow-y: auto;
                         -webkit-box-sizing: border-box;
                         box-sizing: border-box;
+                    }
+                    img{
+                        display: block;
+                        margin: 0 auto;
                     }
                 }
                 

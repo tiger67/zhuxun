@@ -1,7 +1,7 @@
  import Home from '@/components/Home'
  import SignIn from '@/components/sign/signin/Index'
  import SignUp from '@/components/sign/signup/Index'
- import ForgetPassword from '@/components/sign/ForgetPassword'
+ import ForgetPassword from '@/components/sign/forget-password'
  import Sign from '@/components/sign/Sign'
  import Index from '@/components/index/index'
  import Search from '@/components/search'

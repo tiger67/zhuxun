@@ -212,6 +212,29 @@ $system-bgcolor: #fafafa;
     .comment-item {
       padding: 30px 0;
       border-bottom: 1px solid #eee;
+      // .list-enter-active, .list-leave-active {
+      //   transition: all .4s;
+      // }
+      // .list-enter, .list-leave-to {
+      //   opacity: 0;
+      //   transform: translateY(-30px);
+      // }
+      //transition: all 0.5s;
+      // &.list-enter-active{
+      //   transition: all 0.8s;
+      // }              
+      // &.list-leave-active{
+      //   width: 100%;
+      //   transition: all 0.5s;
+      // }        // position absolute                      
+      // &.list-enter{
+      //   opacity: 0;        
+      //   transform: translateY(-30px);
+      // }              
+      // &.list-leave-to{
+      //   opacity: 0;        
+      //   transform: translateX(190px);
+      // }        
       h1 {
         font-size: 18px;
         color: $system-color-black;

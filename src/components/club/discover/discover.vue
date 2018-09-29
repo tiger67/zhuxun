@@ -20,8 +20,10 @@
                         {{item.introduce}}
                     </div>
                     <div class="btn-box">
-                        <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="attention(index, item.userId)">+ 关注</div>
-                        <div class="fbtn1 followed-btn" v-if="!item.activeName">已关注</div>
+                        <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="attention(index, item.userId)">
+                            <i class="iconfont ic-follow"></i> 关注
+                        </div>
+                        <div class="fbtn1 followed-btn" v-if="!item.activeName"><i class="iconfont ic-followed"></i> 已关注</div>
                     </div>   
                 </div>
             </div>
