@@ -1,8 +1,8 @@
 <template>
   <div class="swiper">
-    <div class="swp-p-container">
-      <router-link v-for="(img,i) in lists" to="/hsh" :key="i" :class="classobject(i)" class="swp-img-wrap">
-        <img class="swp-img" :src="img.img" />
+    <div class="swp-container">
+      <router-link v-for="(img,i) in lists" :to="img.link" :key="i" :class="classobject(i)" class="swp-img-wrap">
+        <img class="swp-img" :src="img.adImg" />
       </router-link>
     </div>
     <ul class="swp-contorl">
@@ -13,6 +13,7 @@
   </div>
 </template>
 <script>
+import API from "@/api"
 export default {
   data() {
     return {
@@ -21,33 +22,18 @@ export default {
       active: 0,
       next: -1,
       preActive: 0,
-      lists: [{
-          url: '/',
-          img: require('@/assets/swiper/1.jpg')
-        },
-        {
-          url: '/',
-          img: require('@/assets/swiper/2.jpg')
-        },
-        {
-          url: '/',
-          img: require('@/assets/swiper/3.jpg')
-        },
-        {
-          url: '/',
-          img: require('@/assets/swiper/4.jpg')
-        },
-        {
-          url: '/',
-          img: require('@/assets/swiper/5.png')
-        }
-      ]
+      lists: []
     }
   },
   mounted() {
-    setInterval(function() {
-      this.swiperRun();
-    }.bind(this), 5000)
+    API["get/api/ad/slide"]({ channel: "1" }).then(res => {
+      if (res.data.code === 0) {
+        this.lists = res.data.data;
+        setInterval(() => {
+          this.swiperRun();
+        }, 5000)
+      }
+    })
   },
   methods: {
     classobject: function(i) {
@@ -83,11 +69,11 @@ export default {
 <style lang="scss">
 .swiper {
   border: 0px solid green;
-  /* border-radius: 6px; */
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
   margin-bottom: 35px;
-  .swp-p-container {
+  .swp-container {
     position: relative;
     img {
       width: 100%;

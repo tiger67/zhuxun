@@ -1,97 +1,139 @@
 <template>
 	<div class="myFavorite-wrapper">
-        <div class="head">
-            <div class="avatar">
-                <img src="../../../assets/tou2@2x.png">
-            </div>
-            <p class="name">筑讯小透明</p>
-        </div>
-        <div class="total-bar">
-            共84<span v-if="paramsID == 2" >收藏</span><span v-if="paramsID == 3" >条浏览记录</span>
-        </div>
-        <div class="content-list">
-             <div class="article-item">
+        <comHeader :pagenum="pagenum"></comHeader>
+        <div class="content-list" v-if="dataList.pageCount>0">
+             <div class="article-item" v-for="(item,index) in dataList.pageData" :key="item.articleId">
                  <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
+                    <h1 class="line-clamp-1" :commentArticleType="item.type">
+                        <router-link :to="'/article/'+ item.articleId">{{item.title}}</router-link>
                     </h1>
                     <div class="time-type">
-                        <span class="time">2018-08-20  14:15:24</span>
+                        <span class="time">{{item.createTime}}</span>
                         <span class="type" v-if="paramsID == 2">收藏</span>
                         <span class="type" v-if="paramsID == 3">浏览</span>
                     </div>
                     <div class="btn-box">
-                        <span class="delete-btn">删除</span>
+                        <span class="delete-btn" @click="deleteLi(index, item.articleId, paramsID)">删除</span>
+                        <!-- <span class="delete-btn" v-if="paramsID == 3" @click="delete(index, item.articleId)">删除</span> -->
                     </div>
                  </div>
              </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
-             <div class="article-item">
-                 <div class="content">
-                    <h1 class="line-clamp-1">
-                        <router-link to="">华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排</router-link>
-                    </h1>
-                     <div class="time-type">
-                         <span class="time">2018-08-20  14:15:24</span>
-                         <span class="type" v-if="paramsID == 2">收藏</span>
-                         <span class="type" v-if="paramsID == 3">浏览</span>
-                     </div>
-                     <div class="btn-box">
-                         <span class="delete-btn">删除</span>
-                     </div>
-                 </div>
-             </div>
+        </div>
+        <div class="com-empty-status" v-if="dataList.pageCount==0">
+            <img src="@/common/img/empty.png">
+            <p>暂无关注</p>
+        </div>
+        <div class="paginate-wrapper" v-if="dataList.pageSum>1">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-size="dataList.pageSize"
+                layout="total, prev, pager, next"
+                :total="dataList.pageCount">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
+    import {collect, browse, delCollect, delBrowse} from '@/api/request';
+    import comHeader from '../comHeader';
+    import sign from "data";
 	export default {
 
         data () {
             return {
                 path: this.$router.currentRoute.path,
-                paramsID: this.$route.params.id
+                paramsID: this.$route.params.id,
+                collect: [],
+                browse: [],
+                dataList: [],
+                startPage: 1,
+                pageSize: 10,
+                pagenum: ''
             }
         },
         watch: {
             '$route' (to, from) {
                 this.path = this.$router.currentRoute.path;
                 this.paramsID = this.$route.params.id;
-                console.log(this.$route.params.id)
+                console.log(this.$route.params.id);
+                if(this.$route.params.id==2){
+                    this.getCollect();
+                }else if(this.$route.params.id==3){
+                    this.getBrowse();
+                }
             }
     	},
-        created(){
+        created() {
+            this.path = this.$router.currentRoute.path;
+            this.paramsID = this.$route.params.id;
+            console.log(this.$route.params.id);
+            if(this.$route.params.id==2){
+                this.getCollect();
+            }else if(this.$route.params.id==3){
+                this.getBrowse();
+            }
+            
+        },
+        methods: {
+            async getCollect(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await collect(params);
+                this.dataList = res.data;
+                this.pagenum = this.dataList.pageCount+'条收藏';
+                console.log(this.dataList)
+            },
+            async getBrowse(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await browse(params);
+                this.dataList = res.data;
+                this.pagenum = this.dataList.pageCount+'条浏览';
+                console.log(this.dataList)
+            },
+            async delCollect(i,id){
+                const res = await delCollect(id);
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
+                this.pagenum = this.dataList.pageCount+'条收藏';
+            },
+            async delBrowse(i,id){
+                const res = await delBrowse(id);
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
+                this.pagenum = this.dataList.pageCount+'条浏览';
+            },
+            deleteLi(i, id, pID){
+                if (pID==2) {
+                    this.delCollect(i, id);
+                }
+                if (pID==3) {
+                    this.delBrowse(i, id);
+                }
+                this.dataList.pageData.splice(i, 1);
+                this.dataList.pageCount--;
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
 
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.startPage = val;
+                if(this.paramsID==2){
+                    this.getCollect();
+                }else if(this.paramsID==3){
+                    this.getBrowse();
+                }
+            }
+        },
+        components: {
+            comHeader
         }
     };
 </script>

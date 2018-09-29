@@ -1,0 +1,88 @@
+.sign-form {
+  form {
+    .input-box {
+      margin-top: -1px;
+      margin-bottom: 0px;
+      width: 100%;
+      position: relative;
+      i {
+        position: absolute;
+        top: 14px;
+        left: 10px;
+        font-size: 18px;
+        color: #969696;
+      }
+      input {
+        width: 100%;
+        height: 50px;
+        margin: 0;
+        padding: 4px 12px 4px 35px;
+        border: 1px solid #c8c8c8;
+        background-color: hsla(0, 0%, 71%, .1);
+        vertical-align: middle;
+        outline: none;
+        font-size: 14px;
+      }
+      &:first-child {
+        input {
+          border-radius: 4px 4px 0 0;
+        }
+      }
+      &.last {
+        input {
+          border-radius: 0 0 4px 4px;
+        }
+      }
+    }
+
+    .submit-box {
+      input {
+        margin-top: 20px;
+        width: 100%;
+        padding: 9px 18px;
+        font-size: 18px;
+        border: none;
+        border-radius: 25px;
+        color: #fff;
+        background: #42c02e;
+        cursor: pointer;
+        outline: none;
+        display: block;
+        clear: both;
+      }
+    }
+  }
+
+  .sign-more-style {
+    li {
+      margin: 0 5px;
+      display: inline-block;
+      a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        display: block;
+      }
+    }
+    a {
+      i {
+        font-size: 28px;
+      }
+    }
+    .ic-weibo {
+      color: #e05244;
+    }
+    .ic-wechat {
+      color: #00bb29
+    }
+    .ic-qq_connect {
+      color: #498ad5
+    }
+    .ic-douban {
+      color: #00820f;
+    }
+    .ic-more {
+      color: #999;
+    }
+  }
+}

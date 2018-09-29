@@ -1,42 +1,125 @@
 <template>
-    <div class="editor-wrapper another-version">
-        <p class="save" v-show="!saving">已保存{{ this.$route.params.id }}</p>
-        <p class="save" v-show="saving">保存中...</p>
-        <div class="content">
-            <input type="text" class="title new" value="2018-08-29"/>
-            <div id="toolbar" class="toolbar"></div>
-            <div class="operate-bar">
-                <span @click="getContent"><i class="icon-save"></i></span>
-                <span v-show="!saving"><i class="icon-release"></i>发布文章</span>
-                <span v-show="saving">保存中...</span>
-            </div>
-            <div class="main">
-                <div id="editor" class="editor"> <!--可使用 min-height 实现编辑区域自动增加高度-->
-                    
+    <div>
+        <vHeader></vHeader>
+        <div class="editor-wrapper">
+            <div class="editor-content">
+                <div class="operate-bar">
+                    <div class="btn-bar">
+                        <span>文章信息</span>
+                        <div class="btn-wrapper">
+                            <div class="fbtn2 write-fbtn2" @click="saveDraft">保存</div>
+                            <div class="fbtn2" @click="release">发布文章</div>
+                        </div>
+                    </div>
+                    <div class="form-bar">
+                        <div class="form-item">
+                            <el-input v-model="title" placeholder="请输入文章标题"></el-input>
+                        </div>
+                        <div class="form-item">
+                            <el-select v-model="circleValue" placeholder="请选择圈子分类" @change="circleChange">
+                                <el-option
+                                  v-for="item in circleOption"
+                                  :key="item.tagId"
+                                  :label="item.tagName"
+                                  :value="item.tagId">
+                                </el-option>
+                            </el-select>
+                            <el-select v-model="labelValue" placeholder="请选择标签类型" @change="labelChange">
+                                <el-option
+                                  v-for="item in labelOption"
+                                  :key="item.tagId"
+                                  :label="item.tagName"
+                                  :value="item.tagId">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <div class="main">
+                    <div class="head">
+                        <span>编辑文章</span>
+                    </div>
+                    <div id="toolbar" class="toolbar"></div>
+                    <div id="editor" class="editor"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                        
+                    </div>
+                </div>
+            </div> 
         </div>
     </div>
 </template>
 
 <script>
-    import Editor from 'wangeditor'
+    import header from '@/components/header/header';
+    import Editor from 'wangeditor';
+    import { getTag, addArticle, redact, singleImageUpload} from '@/api/request';
+    import axios from 'axios';
 
     export default {
         name: 'App',
         data () {
             return {
+                title: '',
                 editor: '',
                 editorContent: '',
                 editorUpImgUrl: 'http://xxxx',  // 编辑器插入的图片上传地址
                 saving: false,
-                initializeContent: '<p>要初始化的内容</p><p>hahaha</p>'
+                initializeContent: '',
+                circleValue: '',
+                labelValue: '',
+                circleOption: [],
+                labelOption: []
             }
         },
         mounted() {
             this.initEditor()
         },
+        created() {
+            this.getTag();
+
+            let rID = this.$route.params.id;
+            if(rID!=0){
+                this.redactArticle(rID); 
+            }
+             
+        },
         methods: {
+            async getTag() {
+                const res = await getTag();
+                console.log(res.data);
+                this.circleOption = res.data;
+                console.log(this.circleOption);
+            },
+            forTag(id){
+                const array = this.circleOption;
+                let tid = 0;
+                for(let i=0; i<array.length; i++){
+                    for(let j=0; j<array[i].tagRspVos.length; j++){
+                        tid = array[i].tagRspVos[j].tagId;
+                        console.log(tid+'--'+id)
+                        if(tid==id){
+                            console.log(i+'--'+j);
+                            this.circleValue = array[i].tagId;
+                            console.log(this.circleValue);
+                            this.circleChange(this.circleValue);
+                            this.labelValue = id;
+                        }
+                    }
+                    
+                }
+            },
+            circleChange(val) {
+                console.log(val);
+                this.labelValue = '';
+                for( let i=0; i<this.circleOption.length; i++ ){
+                    if(this.circleOption[i].tagId===val){
+                        this.labelOption = this.circleOption[i].tagRspVos;
+                    }
+                } 
+            },
+            labelChange() {
+                console.log(this.labelValue)
+            },
             async initEditor () { 
                 this.editor = new Editor('#toolbar', '#editor'); /* 括号里面的对应的是html里div的id */
                 /* 配置菜单栏 */  
@@ -70,10 +153,10 @@
                     /* files 是 input 中选中的文件列表 */ 
                     let formData = new FormData(); 
                     formData.append('file', files[0]) ;
-                    let data = await this.upload(formData) ;
+                    let res = await singleImageUpload(formData) ;
                     /* upload方法是后台提供的上传图片的接口 */
                     /* insert 是编辑器自带的 获取图片 url 后，插入到编辑器的方法 上传代码返回结果之后，将图片插入到编辑器中*/ 
-                    insert(data.imgUrl);
+                    insert(res.data);
                 } ;
                 this.editor.customConfig.onchange = (html) => {
                   this.editorContent = html
@@ -83,17 +166,84 @@
                 console.log(this.editor);
                 this.editor.$textElem.html(this.initializeContent);  // 初始化内容
             },
-            getContent: function () { // 获取编辑器 内容区内容
-                this.editorContent = this.editor.$textElem.html();
-                console.log(this.editorContent);
-                alert(this.editorContent);
-                this.saving = true;
-                setTimeout(() => {
-                    this.saving = false;
-                },1000)
+            async redactArticle(rID){
+                const params = { 'articleId': rID };
+                const res = await redact(params);
+                console.log(res.data);
+                this.title = res.data.title;
+                this.initializeContent = res.data.content;
+                this.forTag(res.data.tagId);
+                this.editor.$textElem.html(this.initializeContent);  // 初始化内容
+            },
+            async addArticle(params){
+                const res = await addArticle(params);
+                console.log(res);
+                this.articleId = res.data;
+                // this.$message({
+                //     type: 'success',
+                //     message: '保存成功',
+                //     duration: 1000
+                // });
+                this.$router.push('/editor/'+ res.data);
+            },
+            async saveDraft() { 
+                this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
+                
+                const params = {
+                    'articleId': this.$route.params.id, 
+                    'title': this.title, 
+                    'tagId': this.labelValue, 
+                    'content': this.editorContent, 
+                    'type': 0
+                };
+                console.log(params);
+                const res = await addArticle(params);
+                console.log(res);
+                if(this.$route.params.id == 0){  //写文章时id为0，保存后需替换成返回的id
+                    this.$router.push('/editor/'+ res.data);
+                }
+                this.$message({
+                    type: 'success',
+                    message: '保存成功',
+                    duration: 1000
+                });
+                // const headers = {};
+                // const user = sessionStorage.getItem("user");
+                //   headers.AppId = JSON.parse(user)['appId'];
+                //   headers.Authorization = "ticket " + JSON.parse(user)['access_ticket'];
+                //   console.log(headers)
+                // axios.post('http://172.25.210.118:8081/api/pc/article/add', {params:params}, {headers:headers})
+                // .then(function (response) {
+                //   console.log(response);
+                // })
+                // .catch(function (error) {
+                //   console.log(error);
+                // });
+                console.log(params);
                 //this.editorContent = this.editor.$txt.html();  // 获取 html 格式
                 // this.editor.$txt.text();  // 获取纯文本
                 // this.editor.$txt.formatText();  // 获取格式化后的纯文本
+            },
+            async release(){
+                const _this = this;
+                this.editorContent = this.editor.$textElem.html(); // 获取编辑器 内容区内容
+                const params = {
+                    'articleId': this.$route.params.id, 
+                    'title': this.title, 
+                    'tagId': this.labelValue, 
+                    'content': this.editorContent, 
+                    'type': 2 
+                };
+                const res = await addArticle(params);
+                console.log(res);
+                this.$message({
+                    type: 'success',
+                    message: '发布成功',
+                    duration: 1000,
+                    onClose: function(){
+                        _this.$router.push('/myCenter/myArticles');
+                    }
+                });
             },
             gg() {
                 this.$fetch('/api/v2/movie/top250')
@@ -101,122 +251,100 @@
                     console.log(response)
                 })
             }
+        },
+        components: {
+            'vHeader': header
         }
     };
 </script>
 
 <style lang="scss">
     $system-color-black: #222;
-
+    .el-select-dropdown{
+        z-index: 12000!important;
+    }
     .editor-wrapper{
-        height: 100vh;
-        position: relative;
-        padding-top: 20px;
+        width: 100%;
+        height: 100%;
+        background: #eee;
+        padding-top: 60px;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        
-        &.another-version{
-            background-color: #d9d9d9;
-            .content{
-                overflow-y: auto;
-                padding-top: 60px;
-                .title{
-                    width: 750px;
-                    -webkit-box-shadow: 0 0 20px rgba(0,0,0,.1);
-                    box-shadow: 0 0 20px rgba(0,0,0,.1);
-                    border-bottom: 1px solid #d9d9d9;
-                    background-color: #fff;
-                    margin: auto;
-                    display: block;
-                    padding-top: 20px;
-                }
-                .w-e-toolbar{
-                    position: fixed;
-                    top: 0;
-                    width: 100%;
-                    left: 0;
-                    z-index: 2;
-                }
-                .operate-bar{
-                    top: 0;
-                    z-index: 5;
-                }
-                .main{
-                    width: 750px;
-                    margin: 0 auto;
-                    .editor{
-                        width: 750px;
-                        margin: 0 auto;
-                        box-shadow: 0 0 20px rgba(0,0,0,.1);
-                        background-color: #fff;
-                    }
-                }
-            }
-        }
-        .save{
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            font-size: 14px;
-            color: #666;
-        }
-        .content{
-            height: 100%;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            .title{
-                width: 100%;
-                padding: 0 80px 10px 40px;
-                border: none;
-                font-size: 30px;
-                color: #595959;
-                outline: none;
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-            .w-e-toolbar{
-                background: #f2f2f2;
-                padding: 7px 5px;
-                border-bottom: 1px solid #ddd;
-            }
+        .editor-content{
+            position: relative;
+            width: 1200px;
+            margin: 0 auto;
+            padding: 30px 0;
             .operate-bar{
-                position: absolute;
-                top: 64px;
-                right: 30px;
-                span{
-                    float: left;
-                    padding: 12px 10px;
+                height: 230px;
+                background: #fff; 
+                margin-bottom: 10px;
+                .btn-bar{
                     font-size: 14px;
-                    color: #666;
-                    margin-left: 10px;
-                    cursor: pointer;
-                    &:hover{
-                        .icon-save:before,.icon-release:before{
-                            color: #222;
-                        } 
+                    height: 60px;
+                    line-height: 60px;
+                    padding: 0 30px;
+                    border-bottom: 1px solid #eee;
+                    color: $system-color-black;
+                    .btn-wrapper{
+                        float: right;
+                        .write-fbtn2{
+                            width: 118px;
+                            height: 34px;
+                            line-height: 34px;
+                            border: 1px solid #eee;
+                            background: #fff;
+                            margin-right: 18px;
+                        }
                     }
-                    .icon-release{
-                        margin-right: 8px;
+                }
+                .form-bar{
+                    padding: 0 30px;
+                    .form-item{
+                        position: relative;
+                        margin-top: 30px;
+                        padding-left: 30px;
+                        .el-input{
+                            .el-input__inner{
+                                width: 900px;
+                            }
+                        }
+                        .el-select{
+                            margin-right: 28px;
+                            .el-input__inner{
+                                width: 300px;
+                            }
+                        }
+                        &:before{
+                            content: ' ';
+                            display: inline-block;
+                            position: absolute;
+                            left: 0;
+                            top: 17px;
+                            width: 6px;
+                            height: 6px;
+                            border-radius: 50%;
+                            background: #F4523B;
+                        }
                     }
                 }
             }
             .main{
-                height: calc(100% - 85px);
-                overflow-y: auto;
-                display: -webkit-box;
-                display: -ms-flexbox;
-                display: flex;
-                -webkit-box-orient: vertical;
-                -webkit-box-direction: normal;
-                -ms-flex-direction: column;
-                flex-direction: column;
-                -webkit-box-sizing: border-box;
-                box-sizing: border-box;
+                background: #fff;
+                .head{
+                    height: 60px;
+                    line-height: 60px;
+                    padding: 0 30px;
+                    font-size:14px;
+                    color: $system-color-black;
+                }
+                .toolbar{
+                    background: #f2f2f2;
+                    padding: 7px 5px;
+                }
                 .editor{
                     position: relative;
-                    -webkit-box-flex: 1;
-                    -ms-flex: 1;
-                    flex: 1;
+                    min-height: 900px;
                     .w-e-text{
                         padding: 30px 40px;
                         color: #333;
@@ -228,7 +356,7 @@
                     }
                 }
                 
-            }     
-        }
+            }  
+        }      
     }
 </style>

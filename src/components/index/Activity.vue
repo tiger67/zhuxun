@@ -2,24 +2,44 @@
   <div class="home-activity">
     <h5 class="home-title">
       最新活动
-      <router-link to="/">详细信息<i class="iconfont ic-link"></i></router-link>
+      <router-link :to="a.url||'/'">详细信息<i class="iconfont ic-link"></i></router-link>
     </h5>
-    <img src="@/assets/home/index/10.png" alt="">
+    <img v-if="a.thumbnail" :src="a.thumbnail" alt="">
+    <img v-else src="@/assets/home/index/10.png" alt="">
     <div class="desc">
-      <h6>活动内容：2018建筑中国品牌沙龙之“微博营销助力设计企业品牌提升”专题活动</h6>
-      <span>时间：2018-09-15  09:00-17:00</span>
+      <h6>活动内容：{{a.title}}{{a.description}}</h6>
+      <span>时间：{{a.start ||'2018-09-15  09:00-17:00'}}</span>
       <br/>
-      <span>地点：全国</span>
+      <span>地点：{{a.city}}</span>
     </div>
   </div>
 </template>
+<script>
+import API from "@/api"
+export default {
+  data() {
+    return {
+      a: {}
+    }
+  },
+  mounted() {
+    API["get/api/newActivity"]().then(res => {
+      if (res.data.code === 0) {
+        this.a = res.data.data;
+      }
+    })
+  }
+}
+
+</script>
 <style lang="scss">
 .home-activity {
   padding-bottom: 3px;
   margin-bottom: 30px;
   .desc {
-    padding: 10px;
-    background-color: #fafafa;
+    padding: 15px;
+    /*  background-color: #fafafa; */
+    border: 1px solid #f0f0f0;
     font-size: 13px;
     h6 {
       line-height: 24px;
@@ -37,6 +57,7 @@
     width: 100%;
     height: auto;
     display: block;
+    border-radius: 4px;
   }
   .home-title {
     margin-bottom: 20px;

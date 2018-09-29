@@ -1,58 +1,87 @@
 <template>
-  <div class="comments-list">
-    <div class="signin-wrap" v-if="!c.isSignIned">
-      <router-link to="/" class="btn signin-btn">登录</router-link>
-      <span>后发表评论</span>
+  <div class="comments-list-w">
+    <div class="hd-title">
+      <span ref="init">{{d.commentSum}}条评论</span>
+      <div class="hd-title-r">
+        <a href="javascript:void(0);" ref="getdataA" @click="putsort(0)" :class="{active:sort==0}">按照时间倒序</a>
+        <a href="javascript:void(0);" ref="getdataB" @click="putsort(1)" :class="{active:sort==1}">按照时间正序</a>
+      </div>
     </div>
-    <ul>
-      <li v-for="c in comments">
-        <div class="author">{{c.author.name}}</div>
-        {{c.content}}
-      </li>
-    </ul>
+    <paging class="comments-list-content" @getDataList="getdata" :pageSize="3">
+      <comment-line v-for="(cmt,i) in comments" :key="cmt.id" :cmt="cmt" :mindex="i" />
+    </paging>
   </div>
 </template>
-<style lang="scss">
-.comments-list {
-    height: 500px;
-    border: 0px solid red;
-    .signin-wrap {
-        margin-top: 50px;
-        height: 80px;
-        border: 1px solid #eee;
-        text-align: center;
-        &:before {
-            height: 100%;
-            display: inline-block;
-            content: '';
-            vertical-align: middle;
-        }
-        .signin-btn {
-            display: inline-block;
-            border-radius: 40px;
-            font-size: 18px;
-            padding: 7px 0;
-            width: 100px;
-            vertical-align: middle;
-            margin-right: 10px;
-            color: #fff;
-            background-color: #ffc81f;
-        }
-    }
-}
-
-</style>
 <script>
-import data from "data"
+import Paging from "@/components/common/Paging"
+import CommentLine from "./CommentLine"
+import api from "./api"
+import data from "./data"
 export default {
   props: {
-    comments: Array
+    comments: Array,
   },
   data() {
     return {
-      c: data
+      sort: data.sort,
+      d: data,
+    }
+  },
+  components: {
+    CommentLine,
+    Paging
+  },
+  mounted() {
+    var id = this.$route.params.id
+    api.commentsum(id);
+  },
+  methods: {
+    getdata({ startPage, pageSize }, cb) {
+      api.getcomments({ id: this.$route.params.id, cb, startPage, pageSize });
+    },
+    putsort(s) {
+      if (data.sort == s) {
+        return;
+      }
+      this.sort = s;
+      data.sort = this.sort;
+      this.$paging.init();
+      //api.getcomments();
     }
   }
 }
 
 </script>
+<style lang="scss">
+.comments-list-w {
+  margin-top: 40px;
+  padding-bottom: 200px;
+  .comments-list-content {
+    /* border: 2px solid red; */
+    min-height: 400px;
+  }
+  .hd-title {
+    padding-bottom: 20px;
+    font-size: 17px;
+    font-weight: 700;
+    border-bottom: 1px solid #f0f0f0;
+    span {
+      vertical-align: middle;
+    }
+    .hd-title-r {
+      float: right;
+      a {
+        margin-left: 10px;
+        font-size: 12px;
+        font-weight: 400;
+        color: #969696;
+        display: inline-block;
+        &.active {
+          color: #222;
+        }
+      }
+    }
+  }
+}
+
+</style>

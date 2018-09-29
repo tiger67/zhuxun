@@ -5,6 +5,7 @@ import r1 from "./r1"
 import r2 from "./r2"
 
 
+
 Vue.use(Router);
 
 let r = r1.concat(r2).concat([{
@@ -22,6 +23,7 @@ let r = r1.concat(r2).concat([{
 export default new Router({
   linkActiveClass: 'active',
   linkExactActiveClass: 'exact-active',
+  mode: 'history',
   routes: r,
   scrollBehavior(to, from, savedPosition) {
     return { x: 0, y: 0 }

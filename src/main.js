@@ -4,10 +4,24 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import VueAwesomeSwiper from 'vue-awesome-swiper'
-import Paginate from 'vuejs-paginate'
+import "@/components/directives"
+import "@/components/filters"
 
-Vue.use(VueAwesomeSwiper)
+
+import { carousel, CarouselItem, Pagination, Button, Input, Select, Option, Cascader, Upload, Message, MessageBox } from 'element-ui'
+//import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(carousel)
+Vue.use(CarouselItem)
+Vue.use(Pagination)
+Vue.use(Button)
+Vue.use(Input)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Cascader)
+Vue.use(Upload)
+Vue.prototype.$message = Message
+Vue.prototype.$msgbox = MessageBox
+
 
 Vue.config.productionTip = false
 

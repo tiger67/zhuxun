@@ -24,9 +24,32 @@ a {
 }
 
 
-element.style {}
 
+<<<<<<< HEAD
+=======
+@media (max-width: 1366px) {
+  .w {
+    width: 960px;
+  }
+}
 
+@media (max-width: 1092px) {
+  .w {
+    width: 750px;
+  }
+}
+
+.w-b {
+  /* width: 71.666666666667%; */
+  width: 66.66667%;
+}
+
+.w-s {
+  /* width: 25%; */
+  width: 29.16667%;
+}
+
+>>>>>>> 48f9a81ddad02d9a8de9a3ad3e4819e31992f88b
 .m0a {
   margin: 0 auto;
 }
@@ -37,21 +60,57 @@ element.style {}
 }
 
 .clear {
-  &:after,
-  &:before {
+  &:after {
     display: table;
     content: "";
     clear: both;
   }
 }
 
+.pop-enter-active,
+.pop-leave-active {
+  transition: opacity .3s;
+}
+
+.pop-enter,
+.pop-leave-to {
+  opacity: 0;
+}
+
+
+@keyframes slideToTop {
+  0% {
+    transform: translate(0, 120px);
+  }
+}
+
+.slide-to-top {
+  animation: slideToTop .75s ease;
+}
+
+
+
+
+/* 
+.fade-enter-active {
+  transition: transform .5s
+}
+
+.fade-enter,
+.fade-leave-to {
+  transform: translate(0px, 80px);
+} */
+
 .load-more-btn {
   width: 100px;
   height: 42px;
   line-height: 42px;
-  border: 1px solid #aaa;
+  /* border: 1px solid #aaa; */
+  background-color: #f7f7f7;
+  border: 1px solid #dcdcdc;
   text-align: center;
   cursor: pointer;
+  border-radius: 4px;
   margin: 50px auto 84px;
 }
 
@@ -156,6 +215,7 @@ element.style {}
   border: 1px solid #eee;
   border-radius: 100%;
   padding: 6px;
+  background: #fff;
   img {
     width: 100%;
     height: 100%;
@@ -186,51 +246,111 @@ element.style {}
   }
 }
 
+.com-empty-status {
+  text-align: center;
+  margin-top: 100px;
+  img {
+    width: 150px;
+    height: 150px;
+  }
+  p {
+    font-size: 14px;
+    color: #999;
+    display: block;
+    margin: 15px 0;
+  }
+}
+
 .paginate-wrapper {
   text-align: center;
   margin-top: 60px;
   font-size: 0;
-  .pagination {
-    display: inline-block;
-    li {
-      float: left;
-      a {
-        display: inline-block;
-        height: 34px;
-        line-height: 34px;
-        padding: 0 28px;
-        font-size: 14px;
-        color: #999;
-        border: 1px solid #ddd;
-        margin: 0 10px;
-        outline: none;
-        &:hover {
-          background: #fafafa;
+  .el-pagination {
+    font-weight: normal;
+    &.is-background {
+      .el-pager {
+        li:not(.disabled).active {
+          background-color: #4285F4;
+          color: #fff;
         }
-      }
-      &.page-item {
-        a {
-          padding: 0 13px;
-        }
-        &.active {
-          a {
-            border: 1px solid #fff;
-            color: #666;
-            font-weight: bold;
-          }
-        }
-      }
-      &.disabled {
-        display: none;
       }
     }
+  } // .pagination {
+  //   display: inline-block;
+  //   li {
+  //     float: left;
+  //     a {
+  //       display: inline-block;
+  //       height: 34px;
+  //       line-height: 34px;
+  //       padding: 0 28px;
+  //       font-size: 14px;
+  //       color: #999;
+  //       border: 1px solid #ddd;
+  //       margin: 0 10px;
+  //       outline: none;
+  //       &:hover {
+  //         background: #fafafa;
+  //       }
+  //     }
+  //     &.page-item {
+  //       a {
+  //         padding: 0 13px;
+  //       }
+  //       &.active {
+  //         a {
+  //           border: 1px solid #fff;
+  //           color: #666;
+  //           font-weight: bold;
+  //         }
+  //       }
+  //     }
+  //     &.disabled {
+  //       display: none;
+  //     }
+  //   }
+  // }
+  // .page-count {
+  //   display: inline-block;
+  //   font-size: 14px;
+  //   color: #999;
+  //   margin: 0 10px;
+  //   line-height: 36px;
+  //   vertical-align: top;
+  // }
+}
+
+.el-message {
+  top: 60px;
+}
+
+
+//复写
+.el-input__inner,
+.el-textarea__inner {
+  border: 1px solid #fafafa;
+  background-color: #fafafa;
+  width: 250px;
+  &:focus {
+    border: 1px solid #409EFF;
+    background: #fff;
   }
-  .page-count {
-    display: inline-block;
-    font-size: 14px;
-    color: #999;
-    margin: 0 10px;
-    line-height: 36px;
-    vertical-align: top;
+  &:hover {
+    border: 1px solid #409EFF;
   }
+}
+
+.el-cascader,
+.el-select {
+  .el-input__inner,
+  .el-cascader__label {
+    &:hover {
+      border: 1px solid #409EFF;
+      border-radius: 4px;
+    }
+  }
+}
+
+.el-message-box__header {
+  border-bottom: 1px solid #eee;
 }

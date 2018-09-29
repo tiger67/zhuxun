@@ -1,0 +1,53 @@
+@keyframes error-show {
+  0% {
+    opacity: 0;
+  }
+}
+
+.sign-error-wrap {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  .sign-error {
+    opacity: 1;
+    display: inline-block;
+    animation: error-show 1s ease-out;
+    animation-direction: alternate;
+    border: 2px solid #ea6f5a;
+    border-radius: 6px;
+    padding: 10px;
+    color: #ea6f5a;
+    font-weight: 600;
+    background-color: #fff;
+  }
+}
+
+.sign-in {
+  .remember {
+    input {
+      position: relative;
+      top: 2px;
+    }
+    float: left;
+    margin: 15px 0;
+    font-size: 13px;
+  }
+  .submit-box {
+    input[type=submit] {
+      /* background-color: #3194d0; */
+      background-color: #ffc81f;
+    }
+  }
+  .forget-password {
+    float: right;
+    margin: 15px 0;
+    font-size: 14px;
+    /* color: #3194d0; */
+    color: #999;
+    &:hover {
+      color: #222;
+    }
+  }
+}

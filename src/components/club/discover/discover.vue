@@ -4,69 +4,25 @@
             <div class="head-bar">
                 <i class="icon-title1"></i><h1>新增会员</h1><i class="icon-title2"></i>
                 <span class="all">
-                    <router-link to="">全部<i class="icon-more"></i></router-link>
+                    <router-link to="/allNew/0">全部<i class="icon-more"></i></router-link>
                 </span>
             </div>
             <div class="card-content clearfix">
-                <div class="card-item">
+                <div class="card-item" v-for="(item,index) in vipList" :key="item.userId">
                     <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
+                        <router-link target="_blank" :to="{path: '/visitor/' + item.userId}"><img :src="item.photo"></router-link>
                     </div>
-                    <div class="com-name">
-                        <span>工程者说工程者说</span>
-                        <i class="v1"></i>
+                    <div class="com-name line-clamp-1">
+                        <span>{{item.nickName}}</span>
+                        <i class="v1" v-if="item.auth_status===1"></i>
                     </div>
                     <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线老刘带你看一线老刘带你看一线
+                        {{item.introduce}}
                     </div>
                     <div class="btn-box">
-                        <div class="fbtn1 m-follow-btn">+ 关注</div>
+                        <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="attention(index, item.userId)">+ 关注</div>
+                        <div class="fbtn1 followed-btn" v-if="!item.activeName">已关注</div>
                     </div>   
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说工程者说工程</span>
-                        <i class="v2"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 followed-btn">已关注</div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 m-follow-btn">+ 关注</div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 m-follow-btn">+ 关注</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -74,69 +30,24 @@
             <div class="head-bar">
                 <i class="icon-title1"></i><h1>新增机构</h1><i class="icon-title2"></i>
                 <span class="all">
-                    <router-link to="">全部<i class="icon-more"></i></router-link>
+                    <router-link to="/allNew/1">全部<i class="icon-more"></i></router-link>
                 </span>
             </div>
             <div class="card-content clearfix">
-                <div class="card-item">
+                <div class="card-item" v-for="item in OrganList" :key="item.userId ">
                     <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
+                        <img :src="item.photo">
                     </div>
                     <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
+                        <span>{{item.nickName}}</span>
+                        <i class="v1" v-if="item.auth_status===1"></i>
                     </div>
                     <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
+                        {{item.introduce}}
                     </div>
                     <div class="btn-box">
                         <div class="fbtn1 o-follow-btn">+ 关注</div>
                     </div>   
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 followed-btn">已关注</div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 o-follow-btn">+ 关注</div>
-                    </div>
-                </div>
-                <div class="card-item">
-                    <div class="com-avatar">
-                        <img src="../../../assets/tou@2x.png">
-                    </div>
-                    <div class="com-name">
-                        <span>工程者说</span>
-                        <i class="v1"></i>
-                    </div>
-                    <div class="intro line-clamp-3">
-                        工程者老刘带你看一线工程者老刘带你看一线工程者老刘带你看一线
-                    </div>
-                    <div class="btn-box">
-                        <div class="fbtn1 o-follow-btn">+ 关注</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -148,47 +59,14 @@
                 </span>
             </div>
             <div class="club-content clearfix">
-                <div class="club-item">
-                    <img src="../../../assets/pic@2x.png">
+                <div class="club-item" v-for="item in industry" :key="item.id">
+                    <img :src="item.logo">
                     <div class="content">
-                        <h2 class="line-clamp-1">世界奇观世界奇观世界奇观世界奇观世界奇观世界奇观世界奇观世界奇观</h2>
-                        <p class="intro line-clamp-2">世界之大总有些自然与非自然的事物，分享，让我们发现不一样的世界。</p>
-                        <div class="fans"><i class="icon-user"></i>8654人</div>
+                        <h2 class="line-clamp-1">{{item.industryName }}</h2>
+                        <p class="intro line-clamp-2">{{item.tagDesc }}</p>
+                        <div class="fans"><i class="icon-user"></i>{{item.gzNum}}人</div>
                         <div class="label">
-                            <v-label></v-label>
-                        </div>
-                    </div>
-                </div>
-                <div class="club-item">
-                    <img src="../../../assets/pic@2x.png">
-                    <div class="content">
-                        <h2 class="line-clamp-1">世界奇观</h2>
-                        <p class="intro line-clamp-2">世界之大总有些自然与非自然的事物，分享，让我们发现不一样的世界。</p>
-                        <div class="fans"><i class="icon-user"></i>8654人</div>
-                        <div class="label">
-                            <v-label></v-label>
-                        </div>
-                    </div>
-                </div>
-                <div class="club-item">
-                    <img src="../../../assets/pic@2x.png">
-                    <div class="content">
-                        <h2 class="line-clamp-1">世界奇观</h2>
-                        <p class="intro line-clamp-2">世界之大总有些自然与非自然的事物，分享，让我们发现不一样的世界。让我们发现不一样的世界让我们发现不一样的世界</p>
-                        <div class="fans"><i class="icon-user"></i>8654人</div>
-                        <div class="label">
-                            <v-label></v-label>
-                        </div>
-                    </div>
-                </div>
-                <div class="club-item">
-                    <img src="../../../assets/pic@2x.png">
-                    <div class="content">
-                        <h2 class="line-clamp-1">世界奇观</h2>
-                        <p class="intro line-clamp-2">世界之大总有些自然与非自然的事物，分享，让我们发现不一样的世界。</p>
-                        <div class="fans"><i class="icon-user"></i>8654人</div>
-                        <div class="label">
-                            <v-label></v-label>
+                            <v-label :tagRspVos="item.tagRspVos"></v-label>
                         </div>
                     </div>
                 </div>
@@ -199,8 +77,45 @@
 
 <script>
     import label from '@/components/label/label';
+    import { vipOrganList, industry, reAttention } from '@/api/request';
 
 	export default {
+        data() {
+            return {
+                vipList: [],
+                OrganList: [],
+                industry: []
+            }
+        },
+        created() {
+            this.getvipOrgan();
+            this.getIndustry();
+        },
+        methods: {
+            async getvipOrgan(){
+                const res = await vipOrganList();
+                console.log(res);
+                this.vipList = res.data.vipList;
+                this.OrganList = res.data.OrganList;
+
+                this.vipList.forEach(item => {
+                    this.$set(item, 'activeName', true)
+                });
+            },
+            async getIndustry(){
+                const res = await industry();
+                console.log(res);
+                this.industry = res.data;
+            },
+            async attention(i,id){
+                const res = await reAttention(id);
+                this.vipList[i].activeName = !this.vipList[i].activeName;
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
+            }
+        },
         components: {
             'v-label': label
         }
@@ -268,12 +183,18 @@
                     position: relative;
                     margin-top: 75px;
                     font-size: 0;
+                    padding: 0 25px;
+                    span{
+                        display: inline-block;
+                        line-height: 20px;
+                    }
                 }
                 .intro{
                     font-size: 14px;
                     color: #999;
                     line-height: 24px;
                     margin: 16px 34px 25px 34px;
+                    height: 70px;
                 }
                 .btn-box{
                     
@@ -305,7 +226,7 @@
                         h2{
                             font-size: 18px;
                             color: $system-color-black;
-                            margin-bottom: 17px;
+                            margin-bottom: 15px;
                         }
                         .intro{
                             font-size: 14px;
@@ -313,7 +234,7 @@
                             line-height: 24px;
                         }
                         .fans{
-                            margin: 17px 0 20px 0;
+                            margin: 15px 0 20px 0;
                             font-size: 14px;
                             color: #ccc;
                             i{

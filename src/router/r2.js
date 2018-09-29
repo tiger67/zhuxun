@@ -20,6 +20,7 @@ import editor from '@/components/editor/editor'
 import label from '@/components/label/label'
 import visitor from '@/components/visitor/visitor'
 import listContent from '@/components/visitor/listContent/listContent'
+import allNew from '@/components/club/discover/allNew'
 
 
 
@@ -45,7 +46,7 @@ let routes = [
 		  {
 		    path: 'discover',
 		    name: 'discover',
-		    component: discover
+		    component: discover,
 		  },
 		  {
 		    path: 'recentArticles',
@@ -114,25 +115,13 @@ let routes = [
       ]
     },
     {
-        path: '/visitor',
-        component: visitor,
-        children: [
-        	{
-			    path: '/',
-			    redirect: 'listContent'
-			},
-		    {
-		        path: 'listContent',
-		        name: 'listContent',
-		        component: listContent
-		    },
-		    {
-		        path: 'collectList',
-		        name: 'collectList',
-		        component: listContent
-		    }
-        ]
+        path: '/visitor/:id',
+        component: visitor
     },
+	{
+		path: '/allNew/:id',
+		component: allNew
+	}
     
 ];
 

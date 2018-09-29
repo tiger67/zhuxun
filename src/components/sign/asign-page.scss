@@ -1,0 +1,98 @@
+.sign-pg {
+  height: 100%;
+  min-height: 750px;
+  text-align: center;
+  background: url(./components/sign/assets/sign-bg.png) center center no-repeat;
+  &::before {
+    content: "";
+    display: inline-block;
+    height: 85%;
+    vertical-align: middle;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  .logo {
+    position: absolute;
+    top: 56px;
+    left: 50px;
+    font-size: 50px;
+    color: #ea6f5a;
+    img {
+      width: 188px;
+    }
+  }
+}
+
+
+.sign-panel {
+  font-size: 14px;
+  display: inline-block;
+  position: relative;
+  margin: 60px auto 0;
+  vertical-align: middle;
+  width: 400px;
+  padding: 50px 50px 30px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+  transition: all 1s;
+  .close-btn {
+    font-size: 20px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    color: #ccc;
+    font-weight: 200;
+    &:hover {
+      color: #969696;
+      transform: scale(1.3, 1.3)
+    }
+  }
+  footer {
+    margin-top: 50px;
+  }
+  .sign-p-hd {
+    margin: 0 auto 50px;
+    padding: 10px;
+    font-weight: 400;
+    color: #969696;
+    line-height: 1.1;
+    font-size: 18px;
+    a {
+      padding: 10px;
+      color: #969696;
+    }
+    a.exact-active {
+      font-weight: 700;
+      color: #ea6f5a;
+      border-bottom: 2px solid #ea6f5a;
+    }
+  }
+  b {
+    padding: 10px;
+    font-weight: 700;
+  }
+}
+
+.sign-hr {
+  position: relative;
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #b5b5b5;
+  &:before,
+  &:after {
+    content: "";
+    border-top: 1px solid #b5b5b5;
+    display: block;
+    position: absolute;
+    width: 60px;
+    top: 5px
+  }
+  &:before {
+    left: 30px;
+  }
+  &:after {
+    right: 30px;
+  }
+}

@@ -1,41 +1,28 @@
 <template>
-  <div class="atc-c">
-    <div class="show-content-free">
-      <p>建筑学是一门艺术学科，涉及到很多专业知识，在这里小编要讲解的是一些建筑设计行业常识，也就是外行人不知道或者容易误解的点，希望对您了解建筑设计行业有所帮助。</p>
-      <div class="image-package">
-        <img src="//upload-images.jianshu.io/upload_images/12222757-620d7df75a5e00a9.jpg" alt="">
-        <div class="image-caption"></div>
-      </div>
-      <p>1、很多时候建筑师决定不了设计品质</p>
-      <p>这是因为很多时候业主对一个项目的影响比建筑设计师要大得多，主要有以下两点：</p>
-      <p>1）业主的品味对建筑品质起决定性的影响</p>
-      <p>我们很多时候在网上会看到网友嘲讽某个建筑，其实很多时候建筑体现的是业主的意愿而不是建筑师的，建筑师有个时候也比较无奈，因为他必修按照业主的想法去设计，这背后的故事也只有建筑设计师自己知道。</p>
-      <p>2）建筑的造价基本奠定了建筑的总体品质</p>
-      <p>建筑造价是由业主决定的，建筑设计师只能在这造价范围内，最大限度的有效使用，因此就会有一些不如意的地方，影响了建筑的总体品质。</p>
-      <p>2、建筑设计不是设计建筑外观或者室内装修，而是一整个系统设计</p>
-      <p>就以设计汽车为例，建筑师就像汽车的总设计师，它要保证设计出一辆好用、性能均衡和质量稳定的汽车，所以建筑设计师要让建筑功能好用、形象美观、还得坚固耐用。汽车不是一个人能设计出来的，需要一个团队，建筑也一样，还会有水、暖、电等工程师，建筑设计师就是那个负责协调的汽车总设计师。</p>
-      <p>3、建筑设计师的介入越早越好</p>
-      <p>如果您在买地的时候，就带上建筑设计师，那么是最好的了。建筑师早介入的话，会有科学的施工流程，可以避免很多损失。</p>
-      <p>4、建筑设计就是资源配置的过程</p>
-      <p>这么说吧，比如您的预算是100万，那建筑设计师的工作在一定程度上就是来配置这100万的资源。比如地基处理要多少钱，建筑主体结构要花多少钱，庭院要花多少钱，室内装修要花多少钱，房间要设计成多大的面积，室内地面要用什么材料，要不要贴瓷砖等等，建筑设计师就是用专业的知识，合理搭配，将预算花费在最需要的地方。</p>
-      <p>5、建筑成本包括建造的成本和使用成本</p>
-      <p>还是用买小汽车来比喻，除了考虑买下来的价钱，还得考虑油耗、保养及维修的费用，建筑也一样，一座需要经常花费大量人工维护和清洁的建筑就应该慎重考虑了。比如不想要常年开空调，最好在设计开始就提出，需要自然通风冬暖夏凉的要求。</p>
-      <p>6、建筑设计没什么成本</p>
-      <p>这是很多外行人常说的话，因为他们觉得建筑设计就是一台电脑，请个建筑设计师画画图都没有成本的，什么室内设计、产品设计、平面设计都一样。我建议那些人看看经济学原理，了解一下什么叫成本。比如苹果手机，它的成本就是那些电子元件吗？设计、研发甚至营销都是算在价格里了的。</p>
-      <p>原文参考：http://www.gdjksj.com/Article/nljzxjzsjh.html</p>
+  <div class="atc-content-wrap">
+    <div class="show-content-free" v-html="atc.content">
     </div>
   </div>
 </template>
+<script>
+export default {
+  props: {
+    atc: Object
+  },
+  data() {
+    return {}
+  }
+}
+
+</script>
 <style lang="scss">
-.atc-c {
+.atc-content-wrap {
   *,
    :before,
    :after {
     box-sizing: border-box;
   }
   color: #2f2f2f;
-  word-break: break-word!important;
-  word-break: break-all;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.7;
@@ -43,16 +30,19 @@
     margin: 0 0 25px;
     word-break: break-word!important;
   }
-
+  .watermark {
+    display: block;
+    max-width: 100%;
+    margin: 0px auto;
+  }
   .image-package {
     padding-bottom: 25px;
-    width: 700px;
     margin: 10px auto;
     text-align: center;
     img {
       max-width: 100%;
       height: auto;
-
+      margin: 0 auto;
       vertical-align: middle;
       border: 0;
       cursor: -webkit-zoom-in;

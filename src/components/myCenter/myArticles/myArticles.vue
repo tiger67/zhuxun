@@ -1,163 +1,135 @@
 <template>
 	<div class="myArticles-wrapper">
         <div class="head-tab clearfix">
-            <div class="tab-item" :class="{'active': selectType===0}" @click="select(0)">全部文章({{articleList.length}})</div>
-            <div class="tab-item" :class="{'active': selectType===1}" @click="select(1)">已发布({{released.length}})</div>
-            <div class="tab-item" :class="{'active': selectType===3}" @click="select(3)">草稿箱({{drafts.length}})</div>
-            <div class="tab-item" :class="{'active': selectType===2}" @click="select(2)">待审核({{review.length}})</div>
+            <div class="tab-item" :class="{'active': selectType===9}" @click="select(9)">全部文章({{centerArticle.allCount}})</div>
+            <div class="tab-item" :class="{'active': selectType===1}" @click="select(1)">已发布({{centerArticle.publishCount}})</div>
+            <div class="tab-item" :class="{'active': selectType===0}" @click="select(0)">草稿箱({{centerArticle.draftCount}})</div>
+            <div class="tab-item" :class="{'active': selectType===2}" @click="select(2)">待审核({{centerArticle.checkPendingCount}})</div>
         </div>
         <div class="content-list">
-            <div class="article-item" v-show="needShow(item.type)" v-for="(item,index) in articleList">
-                <div class="img-wrapper" v-if="item.hasImg===1">
-                    <img :src="item.img">
-                    <div class="btm-type draft" v-if="item.type===3">草稿</div>
-                    <div class="btm-type review" v-if="item.type===2">审核中</div>
+            <div class="article-item" v-for="(item,index) in articleList.pageData" :key="item.articleId">
+                <div class="img-wrapper"  v-if="item.thumbnail.length>0">
+                    <router-link :to="'/article/'+item.articleId">
+                        <img :src="item.thumbnail">
+                        <div class="btm-type draft" v-if="item.status===0">草稿</div>
+                        <div class="btm-type review" v-if="item.status===2">审核中</div>
+                    </router-link>
                 </div>
                 <div class="content">
-                    <h1 class="line-clamp-1" :class="{'bef-no-img':item.hasImg!=1}">
-                        <span class="draft" v-if="item.hasImg!=1 && item.type===3">草稿</span>
-                        <span class="review" v-if="item.hasImg!=1 && item.type===2">审核中</span>
-                        <router-link to="">{{item.title}}</router-link>
+                    <h1 class="line-clamp-1" :class="{'bef-no-img':item.thumbnail.length==0}">
+                        <span class="draft" v-if="item.status===0">草稿</span>
+                        <span class="review" v-if="item.status===2">审核中</span>
+                        <template v-if="item.status===1">
+                            <router-link :to="'/article/'+item.articleId">{{item.title}}</router-link>
+                        </template>
+                        <template v-else>
+                            {{item.title}}
+                        </template>
                     </h1>
                     <div class="label">
-                        <span v-for="labell in item.label">{{labell.name}}</span>
+                        <span>{{item.tagRspVo.tagName}}</span><span>{{item.childrenTagRspVo.tagName}}</span>
                     </div>
                     <div class="time-type">
-                        <span class="time">{{item.time}}</span>
-                        <span class="type" v-if="item.type===1">发布</span><span class="type" v-if="item.type===2 || item.type===3">保存</span>
+                        <span class="time">{{item.createTime}}</span>
+                        <span class="type" v-if="item.status===1">发布</span><span class="type" v-if="item.status===2 || item.status===0">保存</span>
                     </div>
                     <div class="btn-box">
-                        <router-link :to="{path: '/editor/' + item.id}" target="_blank">
-                            <span class="edit-btn" v-if="item.type===3">编辑</span>
+                        <router-link :to="{path: '/editor/' + item.articleId}" target="_blank">
+                            <span class="edit-btn" v-if="item.status===0">编辑</span>
                         </router-link>
-                        <span class="delete-btn"  @click="showAlert(item.id,index)">删除</span>
+                        <!-- <span class="delete-btn"  @click="showAlert(item.id,index)">删除</span> -->
+                        <el-button type="text" class="delete-btn"  @click="showAlert(item.articleId, index)">删除</el-button>
                     </div>
                 </div>
             </div>
         </div>
-        <alert ref="alert" @select-btn="selectBtn">确定要删除这篇文章吗？</alert>
+        <div class="com-empty-status" v-if="articleList.pageCount==0">
+            <img src="@/common/img/empty.png">
+            <p>暂无文章</p>
+        </div>
+        <div class="paginate-wrapper" v-if="articleList.pageSum>1">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-size="articleList.pageSize"
+                layout="total, prev, pager, next"
+                :total="articleList.pageCount"
+                :current-page="currentPage">
+            </el-pagination>
+        </div>
     </div>
     
 </template>
 
 <script>
-    const released = 1;
-    const review = 2;
-    const drafts = 3;
-    const all = 0;
+    const released = 1; //发布
+    const review = 2;   //审核
+    const drafts = 0;   //草稿
+    const all = 9;
 
-    import alert from '@/components/alert/alert';
+    import {centerArticle, delcenterArticle} from '@/api/request';
 
 	export default {
         data() {
             return {
-                articleList: [
-                    {
-                        'id': 1,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': './assets/pic1.png',
-                        'hasImg': 1, //1是true，0是false
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 1, //1是已发布，2是待审核，3是草稿箱
-                    },
-                    {
-                        'id': 2,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 1,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 2, 
-                    },
-                    {
-                        'id': 3,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 1,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 3, 
-                    },
-                    {
-                        'id': 4,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 0,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 1,
-                    },
-                    {
-                        'id': 5,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 0,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 2,
-                    },
-                    {
-                        'id': 6,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 0,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 3,
-                    },
-                    {
-                        'id': 7,
-                        'title': '华奎区长连夜组织召开全区违法建设、违法销售和扬尘治理工作会议第二排',
-                        'img': '../../../assets/pic1.png',
-                        'hasImg': 1,
-                        'label': [{'name': '艺术设计'},{'name': '建筑设计'}],
-                        'time': '2018-08-20  14:15:24',
-                        'type': 1, 
-                    }
-                ],
-                selectType: 0,
-                deleteId: 0
+                centerArticle: [],
+                articleList: [],
+                selectType: 9,
+                deleteId: 0,
+                startPage: 1,
+                pageSize: 10,
+                currentPage: 1
             }
         },
-        computed: {
-            released() {
-                return this.articleList.filter((article) => {
-                    return article.type === released;
-                })
-            },
-            review() {
-                return this.articleList.filter((article) => {
-                    return article.type === review;
-                })
-            },
-            drafts() {
-                return this.articleList.filter((article) => {
-                    return article.type === drafts;
-                })
-            }
+        created() {
+            this.getData();
         },
         methods: {
+            async getData(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize, status: this.selectType};
+                const res = await centerArticle(params);
+                this.centerArticle = res.data;
+                this.articleList = res.data.page;
+                console.log(this.centerArticle);
+            },
+            async delData(id, index){
+                const res = await delcenterArticle(id);
+                this.$message({
+                    type: 'success',
+                    message: res.data
+                });
+                this.getData();
+            },
             select(type) {
                 this.selectType = type;
+                this.startPage = 1;
+                this.getData();
             },
-            needShow(type){
-                if(this.selectType === all){
-                    return true;
-                }else{
-                    return type === this.selectType;
-                }
-            },
-            showAlert(id) {
-                document.body.style.overflow='hidden';
-                this.$refs.alert.show();
-                this.deleteId = id;
+            showAlert(id, index) {
+                this.$msgbox.confirm('您确定删除该文章?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.delData(id, index);
+                }).catch(() => {        
+                });
             },
             selectBtn(type,i) {
                 console.log(type+'..'+this.deleteId);
                 if(type===1) {
                    this.articleList.splice(i,1);
                 }
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.startPage = val;
+                this.getData();
             }
         },
         components: {
@@ -185,6 +157,7 @@
                     color: $system-color-black;
                     padding-bottom: 19px;
                     border-bottom: 2px solid $system-color-black;
+                    transition: all .2s;
                 }
             }
         }
@@ -234,6 +207,9 @@
                             a{
                                 color: #4285F4;
                             }
+                        }
+                        span{
+                            display: none;
                         }
                         &.bef-no-img{
                             width: 535px;

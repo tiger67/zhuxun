@@ -1,69 +1,97 @@
 <template>
 	<div class="myConcern-wrapper">
-        <div class="head">
-            <div class="avatar">
-                <img src="../../../assets/tou2@2x.png">
+        <comHeader :pagenum="pagenum"></comHeader>
+        <div class="content-list" v-if="attentionData.pageCount>0">
+            <div class="author-item" v-for="(item, index) in attentionData.pageData" :key="item.userId">
+                <router-link target="_blank" :to="{path: '/visitor/' + item.userId}"><img :src="item.photo"></router-link>
+                <div class="content">
+                    <h1 class="com-name">
+                        <span>{{item.nickName}}</span>
+                        <i class="v1" v-if="item.auth_status===1 && item.user_type===1"></i>
+                        <i class="v2" v-if="item.auth_status===1 && item.user_type===0"></i>
+                    </h1>
+                    <p class="line-clamp-1">{{item.introduce}}</p>
+                    <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="reData(index, item.userId)">+ 关注</div>
+                    <div class="fbtn1 followed-btn" v-if="!item.activeName" @click="delData(index, item.userId)"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
+                </div>
             </div>
-            <p class="name">筑讯小透明</p>
         </div>
-        <div class="total-bar">
-            共32关注
+        <div class="com-empty-status" v-if="attentionData.pageCount==0">
+            <img src="@/common/img/empty.png">
+            <p>暂无关注</p>
         </div>
-        <div class="content-list">
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">建筑，在这个社会中扮演什么角色？有什么意义？是文明的痕迹，还是居住的机器，是典雅高贵、粗犷豪放，还是极简主义、功能至上。实际，建筑作品体现着建筑师设计师们的意识形态和他们的世界观。在此，我们不。</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
-            <div class="author-item">
-                <img src="../../../assets/tou3.png">
-                <div class="content">
-                    <h1>筑讯中国<i></i></h1>
-                    <p class="line-clamp-1">顺其自然大概是一种不想努力的挣扎</p>
-                    <div class="fbtn1 m-follow-btn" v-if="!isfollow" @click="follow">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="isfollow" @click="unfollow"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
-                </div>
-            </div>
+        <div class="paginate-wrapper" v-if="attentionData.pageSum>1">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-size="attentionData.pageSize"
+                layout="total, prev, pager, next"
+                :total="attentionData.pageCount">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
+    import {attention, reAttention, delAttention} from '@/api/request';
+    import comHeader from '../comHeader';
+    import sign from "data";
+
 	export default {
         data() {
             return {
-                isfollow: true
+                attentionData: [],
+                startPage: 1,
+                pageSize: 10,
+                currentId: -1,
+                pagenum: ''
             }
         },
+        created() {
+            this.getData();
+        },
         methods: {
-            follow() {
-                this.isfollow = true;
+            async getData(){
+                const params = { startPage: this.startPage, pageSize: this.pageSize };
+                const res = await attention(params);
+                this.attentionData = res.data;
+
+                this.attentionData.pageData.forEach(item => {
+                    this.$set(item, 'activeName', false)
+                });
+                this.pagenum = this.attentionData.pageCount+'个关注';
+                console.log(this.attentionData);
             },
-            unfollow() {
-                this.isfollow = false;
+            async reData(i,id){
+                const res = await reAttention(id);
+                this.attentionData.pageData[i].activeName = !this.attentionData.pageData[i].activeName;
+                this.$message({
+                    message: res.data,
+                    type: 'success'
+                });
+                this.attentionData.pageCount++;
+                this.pagenum = this.attentionData.pageCount+'个关注';
+            },
+            async delData(i,id){
+                const res = await delAttention(id);
+                this.attentionData.pageData[i].activeName = !this.attentionData.pageData[i].activeName;
+                this.$message(res.data);
+                this.attentionData.pageCount--;
+                this.pagenum = this.attentionData.pageCount+'个关注';
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.startPage = val;
+                this.getData();
             }
+        },
+        components: {
+            comHeader
         }
 	};
 </script>
@@ -74,32 +102,7 @@
     .myConcern-wrapper{
         width: 800px;
         margin: 0 auto;
-        .head{
-            text-align: center;
-            margin-top: 59px;
-            .avatar{
-                display: inline-block;
-                width: 120px;
-                height: 120px;
-                margin-bottom: 28px;
-                overflow: hidden;
-                img{
-                    width: 120px;
-                    height: 120px;
-                }
-            }
-            .name{
-                font-size: 24px;
-                color: $system-color-black;
-            }   
-        }
-        .total-bar{
-            margin-top: 68px;
-            padding-bottom: 9px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-            color: $system-color-black;
-        }
+        
         .content-list{
             .author-item{
                 display: flex;
@@ -109,6 +112,7 @@
                 img{
                     width: 48px;
                     height: 48px;
+                    border-radius: 100%;
                 }
                 .content{
                     position: relative;
@@ -118,6 +122,10 @@
                         margin-bottom: 12px;
                         font-size: 16px;
                         color: $system-color-black;
+                        span{
+                            font-size: 16px;
+                            font-weight: normal;
+                        }
                         i{
                             display: inline-block;
                             width: 16px;

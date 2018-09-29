@@ -1,24 +1,48 @@
 <template>
-  <div class="writer-card">
+  <div class="writer-card slide-to-top">
     <div class="writer-card-wrap">
-      <router-link to="/">
-        <div class="avatar-wrap"><img :src="writer.img" alt="" class="avatar"></div>
-        <h4 class="name">
-        {{writer.name}} 
+      <router-link to="/myCenter">
+        <div class="avatar-wrap"><img :src="writer.photo" alt="" class="avatar"></div>
+        <h4 class="name" v-html="writer.nickName">
         <!-- <i  class="iconfont" :class="{'ic-man':writer.gender=='man','ic-woman':writer.gender=='woman'}"></i>  -->
         </h4>
       </router-link>
-      <p>{{writer.description}}</p>
-      <a v-if="!writer.followed" class="btn follow-btn" @click.prevent="$emit('follow', writer, true)">
+      <p>{{writer.instroduce}}</p>
+      <!-- @click.prevent="$emit('follow', writer, true)" -->
+      <a v-show="!c.isSignIned || !followed" class="btn follow-btn" v-addfollow="{w:writer,follow}">
         <span class="btn-inner"><i class="iconfont ic-follow"></i> 关注</span>
       </a>
-      <a v-else="writer.followed" class="btn cancel-btn" @click.prevent="$emit('follow', writer, false)">
+      <!--  @click.prevent="$emit('follow', writer, false)" -->
+      <a v-show="c.isSignIned && followed" class="btn cancel-btn">
         <span class="btn-inner"><i class="iconfont ic-followed"></i>已关注</span>
-        <span class="btn-inner-hover"><i class="iconfont ic-unfollow"></i>取消关注</span>
+       <!--  <span class="btn-inner-hover"><i class="iconfont ic-unfollow"></i>取消关注</span> -->
       </a>
     </div>
   </div>
 </template>
+<script>
+import c from "data"
+export default {
+  props: {
+    writer: Object,
+  },
+  data() {
+    return {
+      followed: false,
+      c
+    }
+  },
+  mounted: function() {
+
+  },
+  methods: {
+    follow: function(flag) {
+      this.followed = true;
+    }
+  }
+}
+
+</script>
 <style lang="scss">
 .writer-card {
   float: left;
@@ -33,7 +57,8 @@
     padding: 0 20px;
     border: 1px solid #eee;
     border-radius: 4px;
-    /* background-color: hsla(0, 0%, 71%, .1); */
+    background-color: hsla(0, 0%, 71%, .1);
+
     transition: .2s ease;
     &:hover {
       box-shadow: 0 5px 20px rgba(0, 0, 0, .1);
@@ -94,6 +119,7 @@
       /* background-color: #42c02e; */
       border: 1px solid #ffc81f;
       background-color: #ffc81f;
+      /*  background-color:#3385ff; */
     }
     .cancel-btn {
       border-radius: 40px;
@@ -103,30 +129,16 @@
       .btn-inner-hover {
         display: none;
       }
-      &:hover {
-        .btn-inner {
-          display: none;
-        }
-        .btn-inner-hover {
-          display: inline;
-        }
-      }
+      /*  &:hover {
+       .btn-inner {
+         display: none;
+       }
+       .btn-inner-hover {
+         display: inline;
+       }
+     } */
     }
   }
 }
 
 </style>
-<script>
-export default {
-  props: {
-    writer: Object,
-  },
-  data() {
-    return {}
-  },
-  methods: {
-
-  }
-}
-
-</script>
