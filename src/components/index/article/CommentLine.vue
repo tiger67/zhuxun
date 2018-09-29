@@ -14,7 +14,7 @@
       <span style="color:#888;font-size:12px;">发表的</span>：{{cmt.peerContent}}</span>
     </div>
     <p class="cmt-content">
-      {{cmt.commentContent||cmt.content}}
+      {{cmt.commentContent}}
     </p>
     <div class="tool-group">
       <a href="javascript:void(0);" class="cmt-tool-zang" :class="{'zan-animation':zan,'active':cmt.isZan}" v-signin="{path:()=>{addzan(cmt)}}">

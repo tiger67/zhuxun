@@ -1,41 +1,22 @@
 <template>
-  <div class="tooltip-wrap">
-    <div class="tooltip-error" v-for="(e,i) in d.errors" :class="{'show':e.show}" :style="`left:${e.pos.left}px;top:${e.pos.top}px;`">
-      <div class="tooltip-arrow tooltip-arrow-border" style="top: 50%;"></div>
-      <div class="tooltip-arrow tooltip-arrow-bg" style="top: 50%;"></div>
-      <div class="tooltip-inner"><i class="iconfont ic-error"></i>{{e.msg}}</div>
-    </div>
+  <div class="tooltip-error" :class="{'show':e.show}" :style="`left:${e.pos.left}px;top:${e.pos.top}px;`">
+    <div class="tooltip-arrow tooltip-arrow-border" style="top: 50%;"></div>
+    <div class="tooltip-arrow tooltip-arrow-bg" style="top: 50%;"></div>
+    <div class="tooltip-inner"><i class="iconfont ic-error"></i>{{e.info}}</div>
   </div>
 </template>
 <script>
 import error from "./data"
-
 export default {
   data() {
     return {
-      d: error.data
+      e: error
     }
-  },
-  methods: {
-    vertify() {
-      return this.d.errors.every(function(err) {
-        return err.isvertify
-      })
-    }
-  },
-  destroyed() {
-    error.initData();
   }
 }
 
 </script>
 <style lang="scss">
-.tooltip-wrap {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
 .tooltip-error {
   font-size: 14px;
   line-height: 25px;
@@ -53,7 +34,7 @@ export default {
   display: none;
   &.show {
     display: block;
-    /* opacity: .9; */
+    opacity: .9;
   }
   .tooltip-arrow {
     position: absolute;

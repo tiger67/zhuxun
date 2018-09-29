@@ -30,7 +30,6 @@
 import API from "@/api"
 export default {
   mounted() {
-    /* console.log(this.$route);*/
     var query = this.$route.query;
     var code = query.code;
     var modelMap = query.modelMap;

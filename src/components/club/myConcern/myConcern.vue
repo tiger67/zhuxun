@@ -11,8 +11,12 @@
                         <i class="v2" v-if="item.auth_status===1 && item.user_type===0"></i>
                     </h1>
                     <p class="line-clamp-1">{{item.introduce}}</p>
-                    <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="reData(index, item.userId)">+ 关注</div>
-                    <div class="fbtn1 followed-btn" v-if="!item.activeName" @click="delData(index, item.userId)"><span class="followed">已关注</span><span class="unfollow">取消关注</span></div>
+                    <div class="fbtn1 m-follow-btn" v-if="item.activeName" @click="reData(index, item.userId)">
+                        <i class="iconfont ic-follow"></i> 关注
+                    </div>
+                    <div class="fbtn1 followed-btn" v-if="!item.activeName" @click="delData(index, item.userId)">
+                        <span class="followed"><i class="iconfont ic-followed"></i> 已关注</span><span class="unfollow">取消关注</span>
+                    </div>
                 </div>
             </div>
         </div>
