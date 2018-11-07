@@ -13,8 +13,8 @@
 </template>
 <style lang="scss">
 .page {
-  padding-top: 60px;
-  min-width: 900px;
+    padding-top: 60px;
+    min-width: 900px;
 }
 
 </style>

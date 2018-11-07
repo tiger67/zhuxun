@@ -49,7 +49,7 @@ export default {
       API['get/api/tp/qqAuth']({ code, state }).then(res => {
         // console.log(res);
         if (res.data.code === 0) {
-          //this.$router.push()
+          //this.$router.push();
           window.location = res.data.data;
         }
       })

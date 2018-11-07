@@ -79,7 +79,6 @@ export default {
         mobile: this.mobile,
       }).then((res, error) => {
         if (res.data.code === 0) {
-
           setTimeout(() => {
             this.c.isSignIned = true;
             this.issubmiting = false;

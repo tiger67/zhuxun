@@ -18,11 +18,6 @@ Vue.directive("signin", {
     })
   }
 })
-Vue.directive("bodyHid", {
-  inserted: (el, binding) => {
-
-  }
-})
 Vue.directive("signout", {
   inserted: (el, binding) => {
     el.addEventListener("click", () => {
